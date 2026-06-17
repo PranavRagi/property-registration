@@ -267,7 +267,8 @@ Buyer scans QR with phone camera
 ## 👨‍💻 Developer
 
 **Pranav** — Final Year B.Tech CSE  
-Amrita Vishwa Vidyapeetham, Chennai Campus Hyderabad
+Amrita Vishwa Vidyapeetham, Chennai Campus 
+Native: Hyderabad, Telangana
 
 ---
 
