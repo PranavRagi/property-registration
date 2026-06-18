@@ -2,7 +2,9 @@
 import { authHeader, logout } from './auth'
 
 // ── Use Railway backend URL in production, relative path locally ──────────────
-const BACKEND = import.meta.env.VITE_BACKEND_URL || ''
+// const BACKEND = import.meta.env.VITE_BACKEND_URL || ''
+const BACKEND = "https://property-registration-production.up.railway.app"
+
 
 export async function apiFetch(
   endpoint: string,
