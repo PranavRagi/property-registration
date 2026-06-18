@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { saveToken } from '../utils/auth'
 
-const BACKEND = import.meta.env.VITE_BACKEND_URL || ''
+// const BACKEND = import.meta.env.VITE_BACKEND_URL || ''
+const BACKEND = "https://property-registration-production.up.railway.app"
 
 interface Props { onLogin: () => void }
 
