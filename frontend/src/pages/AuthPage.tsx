@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { saveToken } from '../utils/auth'
 
+const BACKEND = import.meta.env.VITE_BACKEND_URL || ''
+
 interface Props { onLogin: () => void }
 
 export default function AuthPage({ onLogin }: Props) {
@@ -18,7 +20,7 @@ export default function AuthPage({ onLogin }: Props) {
     setMessage('')
 
     try {
-      const res  = await fetch(`/auth/${tab}`, {
+      const res  = await fetch(`${BACKEND}/auth/${tab}`, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify(form)
@@ -45,18 +47,15 @@ export default function AuthPage({ onLogin }: Props) {
   return (
     <div style={s.page}>
       <div style={s.card}>
-        {/* Logo */}
         <div style={s.logo}>🏠</div>
         <h1 style={s.title}>Property Registration</h1>
         <p style={s.sub}>Your complete real estate platform</p>
 
-        {/* Tabs */}
         <div style={s.tabs}>
           <button style={{ ...s.tab, ...(tab === 'login'    ? s.tabActive : {}) }} onClick={() => { setTab('login');    setMessage('') }}>Login</button>
           <button style={{ ...s.tab, ...(tab === 'register' ? s.tabActive : {}) }} onClick={() => { setTab('register'); setMessage('') }}>Register</button>
         </div>
 
-        {/* Form */}
         <div style={s.field}>
           <label style={s.label}>Username</label>
           <input style={s.input} placeholder="Enter username" value={form.username}
@@ -78,7 +77,6 @@ export default function AuthPage({ onLogin }: Props) {
             onKeyDown={e => e.key === 'Enter' && handleSubmit()}/>
         </div>
 
-        {/* Message */}
         {message && (
           <div style={{ ...s.msg, background: success ? '#eef7f1' : '#fdf3f2', color: success ? '#27ae60' : '#c0392b', border: `1px solid ${success ? '#27ae60' : '#e74c3c'}` }}>
             {message}
@@ -89,10 +87,9 @@ export default function AuthPage({ onLogin }: Props) {
           {loading ? 'Please wait...' : tab === 'login' ? 'Login' : 'Create Account'}
         </button>
 
-        {/* Admin link */}
-        {/* <p style={s.adminLink}> */}
-          {/* Admin? <a href="/admin" style={{ color: '#2980b9', textDecoration: 'none' }}>Admin Panel →</a>
-        </p> */}
+        <p style={s.adminLink}>
+          Admin? <a href="/admin" style={{ color: '#2980b9', textDecoration: 'none' }}>Admin Panel →</a>
+        </p>
       </div>
     </div>
   )
@@ -109,7 +106,7 @@ const s: Record<string, React.CSSProperties> = {
   tabActive: { background: '#2c3e50', color: 'white' },
   field:     { marginBottom: 16 },
   label:     { display: 'block', fontSize: 13, fontWeight: 500, color: '#555', marginBottom: 5 },
-  input:     { width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 6, fontSize: 14, outline: 'none', boxSizing: 'border-box', transition: 'border 0.2s' },
+  input:     { width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 6, fontSize: 14, outline: 'none', boxSizing: 'border-box' },
   msg:       { padding: '10px 14px', borderRadius: 6, fontSize: 13, marginBottom: 16, textAlign: 'center' },
   btn:       { width: '100%', padding: 12, background: '#2c3e50', color: 'white', border: 'none', borderRadius: 6, fontSize: 15, fontWeight: 600, cursor: 'pointer', marginBottom: 16 },
   adminLink: { textAlign: 'center', fontSize: 12, color: '#aaa' },
