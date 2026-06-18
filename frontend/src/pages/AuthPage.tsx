@@ -87,9 +87,9 @@ export default function AuthPage({ onLogin }: Props) {
           {loading ? 'Please wait...' : tab === 'login' ? 'Login' : 'Create Account'}
         </button>
 
-        <p style={s.adminLink}>
+        {/* <p style={s.adminLink}>
           Admin? <a href="/admin" style={{ color: '#2980b9', textDecoration: 'none' }}>Admin Panel →</a>
-        </p>
+        </p> */}
       </div>
     </div>
   )
