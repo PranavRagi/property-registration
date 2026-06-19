@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { saveToken } from '../utils/auth'
 
-const BACKEND = import.meta.env.VITE_BACKEND_URL || ''
+// const BACKEND = import.meta.env.VITE_BACKEND_URL || ''
+const BACKEND = "https://property-registration-production.up.railway.app"
 
 interface Props { onLogin: () => void }
 
@@ -87,9 +88,9 @@ export default function AuthPage({ onLogin }: Props) {
           {loading ? 'Please wait...' : tab === 'login' ? 'Login' : 'Create Account'}
         </button>
 
-        <p style={s.adminLink}>
+        {/* <p style={s.adminLink}>
           Admin? <a href="/admin" style={{ color: '#2980b9', textDecoration: 'none' }}>Admin Panel →</a>
-        </p>
+        </p> */}
       </div>
     </div>
   )

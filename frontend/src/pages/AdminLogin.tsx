@@ -14,9 +14,10 @@ export default function AdminLogin({ onLogin }: Props) {
     setLoading(true)
     setMessage('')
 
+    const BACKEND = "https://property-registration-production.up.railway.app"
     const url = tab === 'login'
-      ? '/admin/login'
-      : '/admin/register'
+      ? `${BACKEND}/admin/login`
+      : `${BACKEND}/admin/register`
 
     try {
       const res  = await fetch(url, {

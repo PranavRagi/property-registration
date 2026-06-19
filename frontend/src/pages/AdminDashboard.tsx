@@ -3,9 +3,11 @@ import { getToken, logout } from '../utils/auth'
 
 type Tab = 'overview' | 'properties' | 'buyers' | 'users'
 
+const BACKEND = "https://property-registration-production.up.railway.app"
+
 async function adminFetch(url: string, options: RequestInit = {}) {
   const token = getToken()
-  return fetch(url, {
+  return fetch(`${BACKEND}${url}`, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
