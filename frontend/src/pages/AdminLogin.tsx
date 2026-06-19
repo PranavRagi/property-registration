@@ -10,11 +10,12 @@ export default function AdminLogin({ onLogin }: Props) {
   const [success, setSuccess] = useState<boolean | null>(null)
   const [loading, setLoading] = useState(false)
 
+  const BACKEND = "https://property-registration-production.up.railway.app"
+
   async function handleSubmit() {
     setLoading(true)
     setMessage('')
-
-    const BACKEND = "https://property-registration-production.up.railway.app"
+    
     const url = tab === 'login'
       ? `${BACKEND}/admin/login`
       : `${BACKEND}/admin/register`

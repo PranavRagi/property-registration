@@ -18,7 +18,7 @@ export function useSocket(): Socket | null {
     }
 
     // Create new socket connection
-    socketInstance = io('/', {
+    socketInstance = io('https://property-registration-production.up.railway.app', {
       auth:       { token },
       path:       '/socket.io',
       transports: ['websocket', 'polling']

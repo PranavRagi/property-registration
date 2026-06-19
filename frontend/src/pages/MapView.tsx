@@ -91,7 +91,8 @@ export default function MapView() {
   async function loadProperties() {
     setLoading(true)
     try {
-      const res = await fetch('/map/properties')
+      const BACKEND = "https://property-registration-production.up.railway.app"
+      const res = await fetch(`${BACKEND}/map/properties`)
       if (!res.ok) return
       const data: Property[] = await res.json()
       setProperties(data)
