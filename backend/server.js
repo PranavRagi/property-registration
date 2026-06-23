@@ -48,7 +48,15 @@ const FRONTEND_URL = process.env.FRONTEND_URL || `http://${LOCAL_IP}:5173`
 const UPLOAD_DIR = path.join(__dirname, 'uploads')
 const BUYERS_DIR = path.join(UPLOAD_DIR, 'buyers')
 
-app.use(cors())
+app.use(cors({
+  origin:[
+    'https://property-registration.vercel.app',
+    'http://localhost:5173'
+  ],
+  methods:[ 'GET', 'POST', 'PUT', 'DELETE',' PATCH',' OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}))
 app.use(express.json())
 app.use('/uploads', express.static(UPLOAD_DIR))
 
