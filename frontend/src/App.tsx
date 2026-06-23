@@ -111,10 +111,6 @@ function BuyerDetailPage({ id }: { id: string }) {
   useEffect(() => {
     // const BACKEND = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000'
     const BACKEND = "https://property-registration-production.up.railway.app"
-<<<<<<< HEAD
-
-=======
->>>>>>> bb8d752dbb117f9f4ebc7bd8de5df86c9608a5da
     fetch(`${BACKEND}/buyer/${id}`)
       .then(r => r.json())
       .then(d => d.error ? setError(d.error) : setBuyer(d))
