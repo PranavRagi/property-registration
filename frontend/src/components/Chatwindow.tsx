@@ -46,6 +46,8 @@ export default function ChatWindow({ roomID, onClose, propertyID = null }: Props
   // This prevents isMine failing due to stale closure or case mismatch
   const me    = (getUsername() || '').trim()
   const other = getOtherUser(roomID, me)
+  const BACKEND = "https://property-registration-production.up.railway.app"
+  const API_URL = `${BACKEND}/api`
 
   // ── On mount — join room + load history ───────────────────────────────────
   useEffect(() => {

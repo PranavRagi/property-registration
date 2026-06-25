@@ -13,10 +13,11 @@ export default function MyProperties({ onEdit, onNavigate }: Props) {
   const [viewProp,   setViewProp]   = useState<Property | null>(null)
 
   useEffect(() => { fetchProperties() }, [])
+  const BACKEND = "https://property-registration-production.up.railway.app"
 
   async function fetchProperties() {
     try {
-      const res = await apiFetch('/my-properties')
+      const res = await apiFetch(`${BACKEND}/my-properties`)
       if (!res) return
       const data = await res.json()
       if (Array.isArray(data)) setProperties(data)
@@ -32,7 +33,7 @@ export default function MyProperties({ onEdit, onNavigate }: Props) {
   async function handleDelete(id: string) {
     if (!window.confirm('Are you sure you want to delete this property?')) return
     try {
-      const res  = await apiFetch(`/property/${id}`, { method: 'DELETE' })
+      const res  = await apiFetch(`${BACKEND}/property/${id}`, { method: 'DELETE' })
       if (!res) return
       const data = await res.json()
       if (data.success) { alert('✅ Property deleted!'); fetchProperties() }
@@ -41,7 +42,7 @@ export default function MyProperties({ onEdit, onNavigate }: Props) {
 
   async function handleStatusChange(id: string, status: string) {
     try {
-      const res = await apiFetch(`/property/${id}/status`, {
+      const res = await apiFetch(`${BACKEND}/property/${id}/status`, {
         method: 'PATCH',
         body:   JSON.stringify({ status })
       })
@@ -71,7 +72,7 @@ export default function MyProperties({ onEdit, onNavigate }: Props) {
         {properties.map(p => (
           <div key={p.propertyID} style={s.item}>
             <div style={s.itemLeft}>
-              {p.images?.[0] && <img src={p.images[0]} alt="thumb" style={s.thumb}/>}
+              {p.images?.[0] && <img src={`${BACKEND}${p.images[0]}`} alt="thumb" style={s.thumb}/>}
               <div>
                 <p style={s.propName}>{p.propertyName}</p>
                 <p style={s.propSub}>{p.geoLocation} | {p.bedroomType} | ₹{Number(p.sqftPrice).toLocaleString()}/sqft</p>

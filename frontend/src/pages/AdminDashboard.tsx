@@ -36,9 +36,9 @@ export default function AdminDashboard() {
   async function fetchAll() {
     try {
       const [pRes, bRes, uRes] = await Promise.all([
-        adminFetch('/admin/properties'),
-        adminFetch('/admin/buyers'),
-        adminFetch('/admin/users'),        // ← unified users
+        adminFetch(`${BACKEND}/admin/properties`),
+        adminFetch(`${BACKEND}/admin/buyers`),
+        adminFetch(`${BACKEND}/admin/users`),        
       ])
       if (pRes.ok) setProperties(await pRes.json())
       if (bRes.ok) setBuyers(await bRes.json())

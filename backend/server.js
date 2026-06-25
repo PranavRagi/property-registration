@@ -17,6 +17,25 @@ const { verifyToken, SECRET } = require('./middleware/auth')
 const app    = express()
 const PORT   = process.env.PORT || 3001
 
+const cloudinary = require('cloudinary').v2
+const {CloudinaryStorage} = require('multer-storage-cloudinary')
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+})
+
+const storage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'property-registration',
+    allowed_formats: ['jpeg','jpg','png','webp'],
+    transformation: [{width:800, quality:'auto'}]
+  }
+})
+
+const upload = multer({storage, limits:{files:4}})
 // ── Get local network IP ──────────────────────────────────────────────────────
 function getLocalIP() {
   const interfaces = os.networkInterfaces()
@@ -122,12 +141,20 @@ app.post('/register', upload.array('images', 4), async (req, res) => {
     const propDir    = path.join(UPLOAD_DIR, propertyID)
     fs.mkdirSync(propDir, { recursive: true })
 
-    const images = (req.files || []).map((file, i) => {
-      const ext     = path.extname(file.originalname)
-      const newPath = path.join(propDir, `img-${i + 1}${ext}`)
-      fs.renameSync(file.path, newPath)
-      return `/uploads/${propertyID}/img-${i + 1}${ext}`
-    })
+    // const images = (req.files || []).map((file, i) => {
+    //   const ext     = path.extname(file.originalname)
+    //   const newPath = path.join(propDir, `img-${i + 1}${ext}`)
+    //   fs.renameSync(file.path, newPath)
+    //   return `/uploads/${propertyID}/img-${i + 1}${ext}`
+    // })
+    const images = (req.files || []).map(file => file.path)
+
+    // QR → upload to Cloudinary too
+    const qrBuffer = await QRCode.toBuffer(propertyURL)
+    const qrUpload = await cloudinary.uploader.upload(`data:image/png;base64,${qrBuffer.toString('base64')}`,
+    {folder: 'property-registration/qr-codes'})
+    const qrCode = qrUpload.secure_url
+
 
     const propertyURL = `${FRONTEND_URL}/property/${propertyID}`
     const qrFilePath  = path.join(propDir, 'qr-code.png')
