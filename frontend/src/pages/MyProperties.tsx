@@ -120,11 +120,9 @@ function QRModal({ qrCode, url, name, onClose }: {
 }) {
   const imgRef = useRef<HTMLImageElement>(null)
 
-  const qrSrc = qrCode
-
   function handleDownload() {
     const a    = document.createElement('a')
-    a.href     = qrSrc
+    a.href     = qrCode
     a.download = `QR-${name.replace(/\s+/g, '-')}.png`
     a.click()
   }
@@ -138,7 +136,7 @@ function QRModal({ qrCode, url, name, onClose }: {
         <p style={s.qrSub}>{name}</p>
 
         <div style={s.qrWrap}>
-          <img ref={imgRef} src={qrSrc} alt="QR Code" style={s.qrImg}/>
+          <img ref={imgRef} src={qrCode} alt="QR Code" style={s.qrImg}/>
         </div>
 
         <p style={s.qrHint}>Point your phone camera at the QR code</p>
