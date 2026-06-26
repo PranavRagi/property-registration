@@ -16,7 +16,7 @@ export default function BuyerDashboard() {
   useEffect(() => { fetchStats(); fetchProperties() }, [])
   const BACKEND = "https://property-registration-production.up.railway.app"
   async function fetchStats() {
-    const res = await apiFetch(`${BACKEND}/dashboard/buyer/stats`)
+    const res = await apiFetch('/dashboard/buyer/stats')
     if (res) setStats(await res.json())
   }
   
@@ -109,7 +109,7 @@ export default function BuyerDashboard() {
         <div style={s.cardsGrid}>
           {displayList.map(p => (
             <div key={p.propertyID} style={s.card} onClick={() => setViewProp(p)}>
-              {p.images?.[0] && <img src={`${BACKEND}${p.images[0]}`} alt="thumb" style={s.cardImg}/>}
+              {p.images?.[0] && <img src={p.images[0]} alt="thumb" style={s.cardImg}/>}
               <div style={s.cardBody}>
                 <p style={s.cardTitle}>{p.propertyName}</p>
                 <p style={s.cardSub}>📍 {p.geoLocation}</p>
@@ -189,9 +189,7 @@ export default function BuyerDashboard() {
                 <>
                   <div style={s.qrWrap}>
                     <img
-                      src={viewProp.qrCode.startsWith('data:')
-                        ? viewProp.qrCode
-                        : `/uploads${viewProp.qrCode.replace('/uploads', '')}`}
+                      src={viewProp.qrCode}
                       alt="QR"
                       style={{ width: 180, height: 180, display: 'block' }}
                     />

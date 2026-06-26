@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { BuyerForm as BuyerFormType, Buyer } from '../types'
 import {getUsername} from '../utils/auth'
+import { apiFetch } from '../utils/api'
 
 
 const empty: BuyerFormType = {
@@ -72,16 +73,16 @@ export default function BuyerForm({ editBuyer, onSaved }: Props) {
     setResult(null)
 
     try {
-      const url    = isEditMode
-        ? `http://localhost:3001/buyer/${editBuyer!.buyerID}`
-        : 'http://localhost:3001/buyer/register'
+      const endpoint = isEditMode
+        ? `/buyer/${editBuyer!.buyerID}`
+        : '/buyer/register'
       const method = isEditMode ? 'PUT' : 'POST'
 
-      const res = await fetch(url, {
+      const res = await apiFetch(endpoint, {
         method,
-        headers: { 'Content-Type': 'application/json' },
         body:    JSON.stringify({ ...form, ownerUsername: getUsername() || '' })
       })
+      if (!res) { setError('Could not connect to server.'); return }
       const data = await res.json()
 
       if (!res.ok) { setError(data.message); return }
@@ -170,7 +171,7 @@ export default function BuyerForm({ editBuyer, onSaved }: Props) {
             <p style={{ color: '#27ae60', fontWeight: 700, fontSize: 16, marginBottom: 8 }}>✅ Buyer Registered!</p>
             <p style={{ fontSize: 14, color: '#333', marginBottom: 6 }}>Buyer ID: <b>{result.buyerID}</b></p>
             <p style={{ fontSize: 12, color: '#888', marginBottom: 12 }}>Scan QR to view buyer profile</p>
-            <img src={`http://localhost:3001${result.qrCode}`} alt="QR Code" style={{ width: 160, height: 160 }}/>
+            <img src={result.qrCode} alt="QR Code" style={{ width: 160, height: 160 }}/>
             <p style={{ fontSize: 11, color: '#aaa', marginTop: 8 }}>{result.buyerURL}</p>
           </div>
         )}
