@@ -120,9 +120,7 @@ function QRModal({ qrCode, url, name, onClose }: {
 }) {
   const imgRef = useRef<HTMLImageElement>(null)
 
-  const qrSrc = qrCode.startsWith('data:')
-    ? qrCode
-    : `/uploads${qrCode.replace('/uploads', '')}`
+  const qrSrc = qrCode
 
   function handleDownload() {
     const a    = document.createElement('a')

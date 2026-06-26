@@ -200,7 +200,7 @@ app.get('/properties', async (req, res) => {
 })
 
 // ── PUT /property/:id ─────────────────────────────────────────────────────────
-app.put('/property/:id', upload.array('images', 4), async (req, res) => {
+app.put('/property/:id', verifyToken, upload.array('images', 4), async (req, res) => {
   try {
     const existing = await Property.findOne({ propertyID: req.params.id })
     if (!existing) return res.status(404).json({ success: false, message: 'Property not found.' })
@@ -236,7 +236,7 @@ app.put('/property/:id', upload.array('images', 4), async (req, res) => {
 })
 
 // ── DELETE /property/:id ──────────────────────────────────────────────────────
-app.delete('/property/:id', async (req, res) => {
+app.delete('/property/:id', verifyToken, async (req, res) => {
   try {
     const deleted = await Property.findOneAndDelete({ propertyID: req.params.id })
     if (!deleted) return res.status(404).json({ success: false, message: 'Property not found.' })
@@ -249,7 +249,7 @@ app.delete('/property/:id', async (req, res) => {
 })
 
 // ── PATCH /property/:id/status ────────────────────────────────────────────────
-app.patch('/property/:id/status', async (req, res) => {
+app.patch('/property/:id/status', verifyToken, async (req, res) => {
   try {
     const property = await Property.findOneAndUpdate(
       { propertyID: req.params.id },
@@ -280,7 +280,7 @@ app.get('/my-properties', verifyToken, async (req, res) => {
 // ════════════════════════════════════════════════════════════════════════════
 
 // ── POST /buyer/register ──────────────────────────────────────────────────────
-app.post('/buyer/register', async (req, res) => {
+app.post('/buyer/register', verifyToken, async (req, res) => {
   try {
     const { fullName, mobile, email, address,
             budgetMin, budgetMax, preferredCity, preferredType } = req.body
@@ -348,7 +348,7 @@ app.get('/buyer/:id', async (req, res) => {
 })
 
 // ── PUT /buyer/:id ────────────────────────────────────────────────────────────
-app.put('/buyer/:id', async (req, res) => {
+app.put('/buyer/:id', verifyToken, async (req, res) => {
   try {
     const existing = await Buyer.findOne({ buyerID: req.params.id })
     if (!existing) return res.status(404).json({ success: false, message: 'Buyer not found.' })
@@ -377,7 +377,7 @@ app.put('/buyer/:id', async (req, res) => {
 })
 
 // ── DELETE /buyer/:id ─────────────────────────────────────────────────────────
-app.delete('/buyer/:id', async (req, res) => {
+app.delete('/buyer/:id', verifyToken, async (req, res) => {
   try {
     const deleted = await Buyer.findOneAndDelete({ buyerID: req.params.id })
     if (!deleted) return res.status(404).json({ success: false, message: 'Buyer not found.' })
@@ -393,7 +393,7 @@ app.delete('/buyer/:id', async (req, res) => {
 })
 
 // ── PATCH /buyer/:id/status ───────────────────────────────────────────────────
-app.patch('/buyer/:id/status', async (req, res) => {
+app.patch('/buyer/:id/status', verifyToken, async (req, res) => {
   try {
     const buyer = await Buyer.findOneAndUpdate(
       { buyerID: req.params.id },

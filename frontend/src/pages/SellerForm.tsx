@@ -97,18 +97,23 @@ export default function SellerForm({ editProperty, onSaved }: Props) {
     setResult(null)
 
     const fd = new FormData()
-      Object.entries(form).forEach(([k, v]) => fd.append(k, v))
-      images.forEach(img => fd.append('images', img))
-      fd.append('ownerUsername', getUsername() || '')
+    Object.entries(form).forEach(([k, v]) => fd.append(k, v))
+    images.forEach(img => fd.append('images', img))
+    fd.append('ownerUsername', getUsername() || '')
 
-      try {
-        const endpoint = isEditMode ? `/property/${editProperty!.propertyID}` : '/register'
-        const method = isEditMode ? 'PUT' : 'POST'
-        const res = await apiFetch(endpoint, {method, body:fd})
+    try {
+      const url    = isEditMode
+        ? `http://localhost:3001/property/${editProperty!.propertyID}`
+        : 'http://localhost:3001/register'
+      const method = isEditMode ? 'PUT' : 'POST'
 
-        if (!res) { setError('Could not connect to server.'); return }
-        const data = await res.json()
-        if(!res.ok){setError(data.message);return}
+      const endpoint = isEditMode ? `/property/${editProperty!.propertyID}` : '/register'
+      const res = await apiFetch(endpoint, {method, body:fd})
+      // const data = await res.json()
+
+      if (!res)  return 
+      const data = await res.json()
+      if(!res.ok){setError(data.message);return}
 
       
       if (isEditMode) {
