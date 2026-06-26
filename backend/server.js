@@ -72,7 +72,7 @@ app.use(cors({
     'https://property-registration.vercel.app',
     'http://localhost:5173'
   ],
-  methods:[ 'GET', 'POST', 'PUT', 'DELETE',' PATCH',' OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }))
@@ -144,19 +144,19 @@ app.post('/register', upload.array('images', 4), async (req, res) => {
     // const images = (req.files || []).map((file, i) => {
     //   const ext     = path.extname(file.originalname)
     //   const newPath = path.join(propDir, `img-${i + 1}${ext}`)
+    //   fs.renameSync(file.path, newPath)
+    //   return `/uploads/${propertyID}/img-${i + 1}${ext}`
     // })
     const images = (req.files || []).map(file => file.path)
 
-    // QR → upload to Cloudinary too
-    const qrBuffer = await QRCode.toBuffer(propertyURL)
-    const qrUpload = await cloudinary.uploader.upload(`data:image/png;base64,${qrBuffer.toString('base64')}`,
-    {folder: 'property-registration/qr-codes'})
-    const qrCode = qrUpload.secure_url
-
-
+    // ✅ Declare propertyURL FIRST, then generate QR and upload to Cloudinary
     const propertyURL = `${FRONTEND_URL}/property/${propertyID}`
-    const qrFilePath  = path.join(propDir, 'qr-code.png')
-    await QRCode.toFile(qrFilePath, propertyURL)
+    const qrBuffer    = await QRCode.toBuffer(propertyURL)
+    const qrUpload    = await cloudinary.uploader.upload(
+      `data:image/png;base64,${qrBuffer.toString('base64')}`,
+      { folder: 'property-registration/qr-codes' }
+    )
+    const qrCode = qrUpload.secure_url
 
     await Property.create({
       propertyID, propertyName, size, bedroomType, propertyType,
@@ -221,7 +221,7 @@ app.put('/property/:id', upload.array('images', 4), async (req, res) => {
     }
 
     if (req.files && req.files.length > 0) {
-      // multer-storage-cloudinary already uploaded files — file.path = Cloudinary URL
+      // multer-storage-cloudinary already uploaded — file.path = Cloudinary URL
       updateData.images = req.files.map(file => file.path)
     }
 
@@ -300,13 +300,17 @@ app.post('/buyer/register', async (req, res) => {
     const buyerDir = path.join(BUYERS_DIR, buyerID)
     fs.mkdirSync(buyerDir, { recursive: true })
 
-    const qrFilePath = path.join(buyerDir, 'qr-code.png')
-    await QRCode.toFile(qrFilePath, buyerURL)
+    const buyerQRBuffer = await QRCode.toBuffer(buyerURL)
+    const buyerQRUpload = await cloudinary.uploader.upload(
+      `data:image/png;base64,${buyerQRBuffer.toString('base64')}`,
+      { folder: 'property-registration/qr-codes' }
+    )
+    const buyerQRCode = buyerQRUpload.secure_url
 
     await Buyer.create({
       buyerID, fullName, mobile, email, address,
       budgetMin, budgetMax, preferredCity, preferredType,
-      qrCode:        `/uploads/buyers/${buyerID}/qr-code.png`,
+      qrCode:        buyerQRCode,
       buyerURL,
       status:        '',
       ownerUsername: req.body.ownerUsername || '',
@@ -314,7 +318,7 @@ app.post('/buyer/register', async (req, res) => {
     })
 
     console.log(`\n✅ Buyer Registered: ${buyerID}`)
-    res.json({ success: true, buyerID, qrCode: `/uploads/buyers/${buyerID}/qr-code.png`, buyerURL })
+    res.json({ success: true, buyerID, qrCode: buyerQRCode, buyerURL })
   } catch (err) {
     res.status(500).json({ error: err.message })
   }
@@ -863,31 +867,31 @@ app.post('/admin/regenerate-qr', verifyAdmin, async (req, res) => {
     let   updated    = 0
 
     for (const p of properties) {
-      const newURL     = `${FRONTEND_URL}/property/${p.propertyID}`
-      const qrFilePath = path.join(UPLOAD_DIR, p.propertyID, 'qr-code.png')
-      fs.mkdirSync(path.dirname(qrFilePath), { recursive: true })
-      await QRCode.toFile(qrFilePath, newURL)
+      const newURL   = `${FRONTEND_URL}/property/${p.propertyID}`
+      const qrBuf    = await QRCode.toBuffer(newURL)
+      const qrResult = await cloudinary.uploader.upload(
+        `data:image/png;base64,${qrBuf.toString('base64')}`,
+        { folder: 'property-registration/qr-codes' }
+      )
       await Property.findOneAndUpdate(
         { propertyID: p.propertyID },
-        { propertyURL: newURL },
-        { new: true }
+        { propertyURL: newURL, qrCode: qrResult.secure_url }
       )
       updated++
-      console.log(`✅ QR regenerated: ${p.propertyID} → ${newURL}`)
     }
 
     for (const b of buyers) {
-      const newURL     = `${FRONTEND_URL}/buyer/${b.buyerID}`
-      const qrFilePath = path.join(BUYERS_DIR, b.buyerID, 'qr-code.png')
-      fs.mkdirSync(path.dirname(qrFilePath), { recursive: true })
-      await QRCode.toFile(qrFilePath, newURL)
+      const newURL   = `${FRONTEND_URL}/buyer/${b.buyerID}`
+      const qrBuf    = await QRCode.toBuffer(newURL)
+      const qrResult = await cloudinary.uploader.upload(
+        `data:image/png;base64,${qrBuf.toString('base64')}`,
+        { folder: 'property-registration/qr-codes' }
+      )
       await Buyer.findOneAndUpdate(
         { buyerID: b.buyerID },
-        { buyerURL: newURL },
-        { new: true }
+        { buyerURL: newURL, qrCode: qrResult.secure_url }
       )
       updated++
-      console.log(`✅ QR regenerated: ${b.buyerID} → ${newURL}`)
     }
     res.json({
       success: true,
