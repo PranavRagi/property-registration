@@ -72,7 +72,7 @@ app.use(cors({
     'https://property-registration.vercel.app',
     'http://localhost:5173'
   ],
-  methods:[ 'GET', 'POST', 'PUT', 'DELETE',' PATCH',' OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }))
@@ -80,15 +80,15 @@ app.use(express.json())
 app.use('/uploads', express.static(UPLOAD_DIR))
 
 // ── Multer setup ──────────────────────────────────────────────────────────────
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = path.join(UPLOAD_DIR, 'temp')
-    fs.mkdirSync(dir, { recursive: true })
-    cb(null, dir)
-  },
-  filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`)
-})
-const upload = multer({ storage, limits: { files: 4 } })
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     const dir = path.join(UPLOAD_DIR, 'temp')
+//     fs.mkdirSync(dir, { recursive: true })
+//     cb(null, dir)
+//   },
+//   filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`)
+// })
+// const upload = multer({ storage, limits: { files: 4 } })
 
 // ── ID Generators ─────────────────────────────────────────────────────────────
 function generatePropertyID(propertyName, count) {
@@ -150,16 +150,14 @@ app.post('/register', upload.array('images', 4), async (req, res) => {
     const images = (req.files || []).map(file => file.path)
 
     // QR → upload to Cloudinary too
-    const qrBuffer = await QRCode.toBuffer(propertyURL)
-    const qrUpload = await cloudinary.uploader.upload(`data:image/png;base64,${qrBuffer.toString('base64')}`,
-    {folder: 'property-registration/qr-codes'})
-    const qrCode = qrUpload.secure_url
-
-
+    // declare URL first, then generate QR
     const propertyURL = `${FRONTEND_URL}/property/${propertyID}`
-    const qrFilePath  = path.join(propDir, 'qr-code.png')
-    await QRCode.toFile(qrFilePath, propertyURL)
-    const qrCode = `/uploads/${propertyID}/qr-code.png`
+    const qrBuffer    = await QRCode.toBuffer(propertyURL)
+    const qrUpload    = await cloudinary.uploader.upload(
+      `data:image/png;base64,${qrBuffer.toString('base64')}`,
+      { folder: 'property-registration/qr-codes' }
+    )
+    const qrCode = qrUpload.secure_url
 
     await Property.create({
       propertyID, propertyName, size, bedroomType, propertyType,
@@ -309,12 +307,17 @@ app.post('/buyer/register', async (req, res) => {
     fs.mkdirSync(buyerDir, { recursive: true })
 
     const qrFilePath = path.join(buyerDir, 'qr-code.png')
-    await QRCode.toFile(qrFilePath, buyerURL)
+    const buyerQRBuffer = await QRCode.toBuffer(buyerURL)
+    const buyerQRUpload = await cloudinary.uploader.upload(
+      `data:image/png;base64,${buyerQRBuffer.toString('base64')}`,
+      { folder: 'property-registration/qr-codes' }
+    )
+    const buyerQRCode = buyerQRUpload.secure_url
 
     await Buyer.create({
       buyerID, fullName, mobile, email, address,
       budgetMin, budgetMax, preferredCity, preferredType,
-      qrCode:        `/uploads/buyers/${buyerID}/qr-code.png`,
+      qrCode:        buyerQRCode,
       buyerURL,
       status:        '',
       ownerUsername: req.body.ownerUsername || '',
@@ -322,7 +325,7 @@ app.post('/buyer/register', async (req, res) => {
     })
 
     console.log(`\n✅ Buyer Registered: ${buyerID}`)
-    res.json({ success: true, buyerID, qrCode: `/uploads/buyers/${buyerID}/qr-code.png`, buyerURL })
+    res.json({ success: true, buyerID, qrCode: buyerQRCode, buyerURL })
   } catch (err) {
     res.status(500).json({ error: err.message })
   }
