@@ -21,12 +21,12 @@ export default function SellerDashboard() {
   }, [])
 
   async function fetchStats() {
-    const res = await apiFetch(`${BACKEND}/dashboard/seller/stats`)
+    const res = await apiFetch('/dashboard/seller/stats')
     if (res) setStats(await res.json())
   }
 
   async function fetchProperties() {
-    const res = await apiFetch(`${BACKEND}/my-properties`)
+    const res = await apiFetch('/my-properties')
     if (!res) return
     const data = await res.json()
     const arr  = Array.isArray(data) ? data : []
@@ -165,7 +165,7 @@ export default function SellerDashboard() {
 function PropertyCard({ property: p }: { property: Property }) {
   return (
     <div style={s.card}>
-      {p.images?.[0] && <img src={`${BACKEND}${p.images[0]}`} alt="thumb" style={s.cardImg}/>}
+      {p.images?.[0] && <img src={p.images[0]} alt="thumb" style={s.cardImg}/>}
       <div style={s.cardBody}>
         <p style={s.cardTitle}>{p.propertyName}</p>
         <p style={s.cardSub}>📍 {p.geoLocation}</p>

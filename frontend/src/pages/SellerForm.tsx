@@ -262,7 +262,7 @@ export default function SellerForm({ editProperty, onSaved }: Props) {
             <p style={{ color: '#27ae60', fontWeight: 700, fontSize: 16, marginBottom: 8 }}>✅ Property Registered!</p>
             <p style={s.idText}>Property ID: <b>{result.propertyID}</b></p>
             <p style={{ fontSize: 12, color: '#888', marginBottom: 12 }}>Scan QR to view property details</p>
-            <img src={`http://localhost:3001${result.qrCode}`} alt="QR Code" style={{ width: 160, height: 160 }}/>
+            <img src={result.qrCode} alt="QR Code" style={{ width: 160, height: 160 }}/>
             <p style={{ fontSize: 11, color: '#aaa', marginTop: 8 }}>{result.propertyURL}</p>
           </div>
         )}

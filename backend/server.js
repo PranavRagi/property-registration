@@ -68,13 +68,15 @@ const UPLOAD_DIR = path.join(__dirname, 'uploads')
 const BUYERS_DIR = path.join(UPLOAD_DIR, 'buyers')
 
 app.use(cors({
-  origin:[
+  origin: [
     'https://property-registration.vercel.app',
-    'http://localhost:5173'
+    'http://localhost:5173',
+    `http://${LOCAL_IP}:5173`
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+  credentials: true,
+  exposedHeaders: ['Content-Type', 'Authorization']
 }))
 app.use(express.json())
 app.use('/uploads', express.static(UPLOAD_DIR))
