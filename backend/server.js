@@ -179,14 +179,30 @@ app.post('/register', upload.array('images', 4), async (req, res) => {
 })
 
 // ── GET /property/:id ─────────────────────────────────────────────────────────
-app.get('/property/:id', async (req, res) => {
-  try {
-    const property = await Property.findOne({ propertyID: req.params.id }).lean()
-    if (!property) return res.status(404).json({ error: 'Property not found.' })
-    res.json(property)
-  } catch (err) {
-    res.status(500).json({ error: err.message })
-  }
+app.get('property/:id',async (req, res) => {
+    try{
+        const property = await Property.findOne({propertyID: req.params.id}).lean()
+        if(!property) return res.status(404).json({error: 'Property not found'})
+        
+        const {sellerName, ContactNo, email, SqftPrice, boxPrice, ...publicData} = property
+        res.json(publicData)
+    }catch(err){
+        res.status(500).json({error: err.message})
+    }
+})
+// ── GET /property/:id/full — authenticated, own property only ─────────────────
+app.get('property/:id/full', verifyToken, async (req, res) => {
+    try{
+        const property = await Property.findOne({
+            prpertyID: req.params.id,
+            ownerUsername: req.user.username // only the owner can fetch full data
+        }).lean()
+        if (!property) return res.status(404).json({error: 'Property not found or not authenticated.'})
+        
+        res.json(property)
+    } catch(err){
+        res.status(500).json({error: err.message})
+    }
 })
 
 // ── GET /properties ───────────────────────────────────────────────────────────

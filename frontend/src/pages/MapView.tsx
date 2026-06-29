@@ -39,11 +39,9 @@ async function geocodeCity(location: string): Promise<{ lat: number; lng: number
   const key = location.toLowerCase().trim()
   if (key in geocodeCache) return geocodeCache[key]
 
-  // Strategy 1 — full string
   let result = await nominatimLookup(location)
   await new Promise(r => setTimeout(r, 300))
 
-  // Strategy 2 — last segment e.g. "Hyderabad" from "Miyapur, Hyderabad"
   if (!result) {
     const parts = location.split(',').map(s => s.trim()).filter(Boolean)
     if (parts.length > 1) {
@@ -52,7 +50,6 @@ async function geocodeCity(location: string): Promise<{ lat: number; lng: number
     }
   }
 
-  // Strategy 3 — first segment
   if (!result) {
     const parts = location.split(',').map(s => s.trim()).filter(Boolean)
     if (parts.length > 1) {
@@ -65,7 +62,6 @@ async function geocodeCity(location: string): Promise<{ lat: number; lng: number
   return result
 }
 
-// ── Read token from .env (VITE_MAPBOX_TOKEN) ─────────────────────────────────
 const MAPBOX_TOKEN = (import.meta as any).env?.VITE_MAPBOX_TOKEN || ''
 
 export default function MapView() {
@@ -85,7 +81,6 @@ export default function MapView() {
 
   const FILTERS = ['All', 'Available', 'Sold', 'On Hold']
 
-  // ── Load properties ────────────────────────────────────────────────────────
   useEffect(() => { loadProperties() }, [])
 
   async function loadProperties() {
@@ -109,7 +104,6 @@ export default function MapView() {
     }
   }
 
-  // ── Filter + Search ────────────────────────────────────────────────────────
   useEffect(() => {
     let result = activeFilter === 'All'
       ? properties
@@ -129,7 +123,6 @@ export default function MapView() {
     setFiltered(result)
   }, [activeFilter, search, properties])
 
-  // ── Load Mapbox GL dynamically — no npm install needed ────────────────────
   useEffect(() => {
     if (mapInstance.current) return
 
@@ -149,7 +142,6 @@ export default function MapView() {
     }
   }, [])
 
-  // ── Init map once Mapbox JS loaded ────────────────────────────────────────
   useEffect(() => {
     if (!mapReady || !mapRef.current || mapInstance.current) return
 
@@ -166,7 +158,6 @@ export default function MapView() {
     })
   }, [mapReady])
 
-  // ── Update markers on filter/search/coord change ──────────────────────────
   useEffect(() => {
     if (!mapInstance.current || !mapReady) return
 
@@ -195,7 +186,6 @@ export default function MapView() {
       el.addEventListener('mouseleave', () => el.style.transform = 'scale(1.0)')
       el.addEventListener('click',      () => setSelected(p))
 
-      // Jitter so overlapping pins separate visually
       const lat = coord.lat + (Math.random() - 0.5) * 0.002
       const lng = coord.lng + (Math.random() - 0.5) * 0.002
 
@@ -207,7 +197,6 @@ export default function MapView() {
     })
   }, [filtered, coords, mapReady])
 
-  // ── Token missing error screen ────────────────────────────────────────────
   if (tokenError || !MAPBOX_TOKEN) {
     return (
       <div style={s.page}>
@@ -222,15 +211,7 @@ export default function MapView() {
           <div style={s.codeBlock}>
             VITE_MAPBOX_TOKEN=pk.eyJ1...your_token
           </div>
-          <p style={{ fontSize: 12, color: '#aaa', marginTop: 12 }}>
-            Then restart the dev server: <code style={s.code}>npm run dev</code>
-          </p>
-          <a
-            href="https://mapbox.com"
-            target="_blank"
-            rel="noreferrer"
-            style={s.tokenLink}
-          >
+          <a href="https://mapbox.com" target="_blank" rel="noreferrer" style={s.tokenLink}>
             Get free token at mapbox.com →
           </a>
         </div>
@@ -238,17 +219,14 @@ export default function MapView() {
     )
   }
 
-  // ── Main map view ─────────────────────────────────────────────────────────
   return (
     <div style={s.page}>
 
-      {/* ── Header: Title + Search + Filters ── */}
+      {/* Header */}
       <div style={s.header}>
         <h2 style={s.title}>🗺️ Property Map</h2>
 
-        {/* Search bar */}
         <div style={s.searchWrap}>
-          {/* <span style={s.searchIcon}>🔍</span> */}
           <input
             style={s.searchInput}
             placeholder="Search by name, city, neighbourhood, BHK..."
@@ -260,7 +238,6 @@ export default function MapView() {
           )}
         </div>
 
-        {/* Filter tabs */}
         <div style={s.filters}>
           {FILTERS.map(f => {
             const cfg   = STATUS_CONFIG[f as keyof typeof STATUS_CONFIG]
@@ -285,7 +262,6 @@ export default function MapView() {
         </div>
       </div>
 
-      {/* ── Search results count ── */}
       {search.trim() && (
         <div style={s.searchInfo}>
           {filtered.length === 0
@@ -295,7 +271,7 @@ export default function MapView() {
         </div>
       )}
 
-      {/* ── Map ── */}
+      {/* Map */}
       <div style={{ position: 'relative' }}>
         {loading && (
           <div style={s.loadingOverlay}>
@@ -310,7 +286,7 @@ export default function MapView() {
         <div ref={mapRef} style={s.map}/>
       </div>
 
-      {/* ── Property Detail Popup ── */}
+      {/* Property Detail Popup */}
       {selected && (
         <div style={s.overlay} onClick={() => setSelected(null)}>
           <div style={s.popup} onClick={e => e.stopPropagation()}>
@@ -342,30 +318,48 @@ export default function MapView() {
                 📍 {selected.neighbourhood}, {selected.geoLocation}
               </p>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 10 }}>
-                {[
-                  ['BHK',        selected.bedroomType],
-                  ['Type',       selected.propertyType],
-                  ['Sqft Price', `₹${Number(selected.sqftPrice).toLocaleString()}`],
-                  ...(selected.boxPrice ? [['Total', `₹${Number(selected.boxPrice).toLocaleString()}`]] : [])
-                ].map(([l, v]) => (
-                  <div key={l} style={s.stat}>
-                    <p style={s.statL}>{l}</p>
-                    <p style={s.statV}>{v}</p>
-                  </div>
-                ))}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
+                <div style={s.stat}>
+                  <p style={s.statL}>BHK</p>
+                  <p style={s.statV}>{selected.bedroomType}</p>
+                </div>
+                <div style={s.stat}>
+                  <p style={s.statL}>Type</p>
+                  <p style={s.statV}>{selected.propertyType}</p>
+                </div>
+                {/* Price hidden */}
+                <div style={{ ...s.stat, gridColumn: '1 / -1', background: '#f8f4ff', border: '1px dashed #c9a6f5' }}>
+                  <p style={{ fontSize: 11, color: '#8e44ad', fontWeight: 500 }}>🔒 Price hidden — contact us to unlock</p>
+                </div>
               </div>
 
               {selected.verified === true && (
-                <p style={{ fontSize: 11, color: '#27ae60', fontWeight: 600 }}>✅ Verified Property</p>
+                <p style={{ fontSize: 11, color: '#27ae60', fontWeight: 600, marginBottom: 10 }}>✅ Verified Property</p>
               )}
-              <p style={{ fontSize: 11, color: '#bbb', marginTop: 6 }}>{selected.propertyID}</p>
+
+              {/* CTA Buttons */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                <button
+                  style={s.popupCtaUnlock}
+                  onClick={() => alert('Our team will contact you shortly to share full details.')}
+                >
+                  🔒 Unlock Details — Contact Us
+                </button>
+                <button
+                  style={s.popupCtaTour}
+                  onClick={() => alert('Tour booked! ₹2,000 payable at confirmation. We\'ll schedule your slot.')}
+                >
+                  🏠 Schedule Tour — ₹2,000
+                </button>
+              </div>
+
+              <p style={{ fontSize: 10, color: '#bbb', marginTop: 8, textAlign: 'center' }}>{selected.propertyID}</p>
             </div>
           </div>
         </div>
       )}
 
-      {/* ── Legend ── */}
+      {/* Legend */}
       <div style={s.legend}>
         {Object.entries(STATUS_CONFIG).filter(([k]) => k !== '').map(([status, cfg]) => (
           <div key={status} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -387,32 +381,32 @@ export default function MapView() {
   )
 }
 
-// ── Styles ────────────────────────────────────────────────────────────────────
 const s: Record<string, React.CSSProperties> = {
-  page:          { background: '#f5f5f5', minHeight: 'calc(100vh - 56px)' },
-  errorCard:     { maxWidth: 440, margin: '80px auto', background: 'white', borderRadius: 12, padding: '40px 36px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', textAlign: 'center' },
-  code:          { background: '#f0f0f0', padding: '2px 6px', borderRadius: 4, fontFamily: 'monospace', fontSize: 12 },
-  codeBlock:     { background: '#1e1e1e', color: '#4ec9b0', padding: '12px 16px', borderRadius: 6, fontFamily: 'monospace', fontSize: 13, textAlign: 'left' },
-  tokenLink:     { display: 'inline-block', marginTop: 16, color: '#3498db', fontSize: 13, textDecoration: 'none', fontWeight: 500 },
-  header:        { display: 'flex', alignItems: 'center', padding: '12px 20px', background: 'white', borderBottom: '1px solid #eee', flexWrap: 'wrap', gap: 10 },
-  title:         { fontSize: 17, fontWeight: 700, color: '#222', marginRight: 4, whiteSpace: 'nowrap' },
-  searchWrap:    { display: 'flex', alignItems: 'center', flex: 1, minWidth: 220, maxWidth: 380, background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 20, padding: '0 12px', gap: 6 },
-  searchIcon:    { fontSize: 14, flexShrink: 0 },
-  searchInput:   { flex: 1, border: 'none', background: 'transparent', outline: 'none', fontSize: 13, padding: '8px 0', color: '#333' },
-  clearBtn:      { background: 'none', border: 'none', cursor: 'pointer', color: '#aaa', fontSize: 14, padding: 0, flexShrink: 0 },
-  searchInfo:    { padding: '6px 20px', background: '#fffbf0', borderBottom: '1px solid #f0e6c0', fontSize: 12, color: '#888' },
-  filters:       { display: 'flex', gap: 6, flexWrap: 'wrap' },
-  filterBtn:     { padding: '6px 12px', background: 'white', border: '1px solid #ddd', borderRadius: 20, fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, color: '#555', whiteSpace: 'nowrap' },
-  filterActive:  { background: '#2c3e50', color: 'white', border: '1px solid #2c3e50' },
-  filterCount:   { background: 'rgba(255,255,255,0.2)', borderRadius: 10, padding: '1px 5px', fontSize: 10, fontWeight: 700 },
-  map:           { width: '100%', height: 'calc(100vh - 160px)', minHeight: 400 },
-  loadingOverlay:{ position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.88)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 },
-  loadingBox:    { textAlign: 'center', padding: 28, background: 'white', borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.1)' },
-  overlay:       { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 },
-  popup:         { background: 'white', borderRadius: 12, width: 300, position: 'relative', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', overflow: 'hidden', maxHeight: '90vh', overflowY: 'auto' },
-  popupClose:    { position: 'absolute', top: 8, right: 8, background: 'rgba(0,0,0,0.5)', border: 'none', color: 'white', width: 28, height: 28, borderRadius: '50%', cursor: 'pointer', fontSize: 13, zIndex: 1 },
-  stat:          { background: '#f8f8f8', borderRadius: 6, padding: '8px 10px' },
-  statL:         { fontSize: 10, color: '#aaa', marginBottom: 2 },
-  statV:         { fontSize: 13, fontWeight: 600, color: '#222' },
-  legend:        { display: 'flex', gap: 16, padding: '8px 20px', background: 'white', borderTop: '1px solid #eee', flexWrap: 'wrap', alignItems: 'center' },
+  page:           { background: '#f5f5f5', minHeight: 'calc(100vh - 56px)' },
+  errorCard:      { maxWidth: 440, margin: '80px auto', background: 'white', borderRadius: 12, padding: '40px 36px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', textAlign: 'center' },
+  code:           { background: '#f0f0f0', padding: '2px 6px', borderRadius: 4, fontFamily: 'monospace', fontSize: 12 },
+  codeBlock:      { background: '#1e1e1e', color: '#4ec9b0', padding: '12px 16px', borderRadius: 6, fontFamily: 'monospace', fontSize: 13, textAlign: 'left' },
+  tokenLink:      { display: 'inline-block', marginTop: 16, color: '#3498db', fontSize: 13, textDecoration: 'none', fontWeight: 500 },
+  header:         { display: 'flex', alignItems: 'center', padding: '12px 20px', background: 'white', borderBottom: '1px solid #eee', flexWrap: 'wrap', gap: 10 },
+  title:          { fontSize: 17, fontWeight: 700, color: '#222', marginRight: 4, whiteSpace: 'nowrap' },
+  searchWrap:     { display: 'flex', alignItems: 'center', flex: 1, minWidth: 220, maxWidth: 380, background: '#f5f5f5', border: '1px solid #ddd', borderRadius: 20, padding: '0 12px', gap: 6 },
+  searchInput:    { flex: 1, border: 'none', background: 'transparent', outline: 'none', fontSize: 13, padding: '8px 0', color: '#333' },
+  clearBtn:       { background: 'none', border: 'none', cursor: 'pointer', color: '#aaa', fontSize: 14, padding: 0, flexShrink: 0 },
+  searchInfo:     { padding: '6px 20px', background: '#fffbf0', borderBottom: '1px solid #f0e6c0', fontSize: 12, color: '#888' },
+  filters:        { display: 'flex', gap: 6, flexWrap: 'wrap' },
+  filterBtn:      { padding: '6px 12px', background: 'white', border: '1px solid #ddd', borderRadius: 20, fontSize: 12, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, color: '#555', whiteSpace: 'nowrap' },
+  filterActive:   { background: '#2c3e50', color: 'white', border: '1px solid #2c3e50' },
+  filterCount:    { background: 'rgba(255,255,255,0.2)', borderRadius: 10, padding: '1px 5px', fontSize: 10, fontWeight: 700 },
+  map:            { width: '100%', height: 'calc(100vh - 160px)', minHeight: 400 },
+  loadingOverlay: { position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.88)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 10 },
+  loadingBox:     { textAlign: 'center', padding: 28, background: 'white', borderRadius: 12, boxShadow: '0 4px 16px rgba(0,0,0,0.1)' },
+  overlay:        { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 },
+  popup:          { background: 'white', borderRadius: 12, width: 310, position: 'relative', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', overflow: 'hidden', maxHeight: '90vh', overflowY: 'auto' },
+  popupClose:     { position: 'absolute', top: 8, right: 8, background: 'rgba(0,0,0,0.5)', border: 'none', color: 'white', width: 28, height: 28, borderRadius: '50%', cursor: 'pointer', fontSize: 13, zIndex: 1 },
+  stat:           { background: '#f8f8f8', borderRadius: 6, padding: '8px 10px' },
+  statL:          { fontSize: 10, color: '#aaa', marginBottom: 2 },
+  statV:          { fontSize: 13, fontWeight: 600, color: '#222' },
+  popupCtaUnlock: { width: '100%', padding: '10px 0', background: '#2c3e50', color: 'white', border: 'none', borderRadius: 6, fontSize: 13, fontWeight: 600, cursor: 'pointer' },
+  popupCtaTour:   { width: '100%', padding: '10px 0', background: 'linear-gradient(135deg, #27ae60 0%, #1e8449 100%)', color: 'white', border: 'none', borderRadius: 6, fontSize: 13, fontWeight: 600, cursor: 'pointer' },
+  legend:         { display: 'flex', gap: 16, padding: '8px 20px', background: 'white', borderTop: '1px solid #eee', flexWrap: 'wrap', alignItems: 'center' },
 }

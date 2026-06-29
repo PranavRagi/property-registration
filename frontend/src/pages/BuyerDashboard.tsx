@@ -26,7 +26,6 @@ export default function BuyerDashboard() {
     const data = await res.json()
     const arr  = Array.isArray(data) ? data : []
     setProperties(arr)
-    // Build HashMap — O(1) lookup
     const map: Record<string, Property> = {}
     arr.forEach((p: Property) => { map[p.propertyID] = p })
     setPropertyMap(map)
@@ -65,7 +64,7 @@ export default function BuyerDashboard() {
         </div>
       )}
 
-      {/* Search — City + ID only (QR removed) */}
+      {/* Search */}
       <div style={s.searchBox}>
         <h3 style={s.subHeading}>🔍 Find Your Property</h3>
         <div style={s.searchRow}>
@@ -113,11 +112,15 @@ export default function BuyerDashboard() {
               <div style={s.cardBody}>
                 <p style={s.cardTitle}>{p.propertyName}</p>
                 <p style={s.cardSub}>📍 {p.geoLocation}</p>
-                <p style={s.cardSub}>🛏 {p.bedroomType} | ₹{Number(p.sqftPrice).toLocaleString()}/sqft</p>
-                {p.boxPrice && <p style={s.cardSub}>💰 Box: ₹{Number(p.boxPrice).toLocaleString()}</p>}
+                <p style={s.cardSub}>🛏 {p.bedroomType}</p>
+                {/* Price hidden — unlock via CTA */}
+                <div style={s.lockedPrice}>
+                  <span style={s.lockIcon}>🔒</span>
+                  <span style={s.lockText}>Price hidden · Unlock details</span>
+                </div>
                 <div style={{ display: 'flex', gap: 6, marginTop: 8 }}>
                   <StatusBadge status={p.status}/>
-                  <span style={{ fontSize: 11 }}>{p.verified === true ? '✅ Verified' :  p.verified === false ? '❌ Rejected' : '🟡 Pending'}</span>
+                  <span style={{ fontSize: 11 }}>{p.verified === true ? '✅ Verified' : p.verified === false ? '❌ Rejected' : '🟡 Pending'}</span>
                 </div>
               </div>
             </div>
@@ -135,8 +138,7 @@ export default function BuyerDashboard() {
                 <th style={s.th}>Property</th>
                 <th style={s.th}>Location</th>
                 <th style={s.th}>Type</th>
-                <th style={s.th}>Sqft Price</th>
-                <th style={s.th}>Box Price</th>
+                <th style={s.th}>Price</th>
                 <th style={s.th}>Status</th>
                 <th style={s.th}>Action</th>
               </tr>
@@ -147,11 +149,12 @@ export default function BuyerDashboard() {
                   <td style={s.td}>{p.propertyName}</td>
                   <td style={s.td}>{p.geoLocation}</td>
                   <td style={s.td}>{p.bedroomType}</td>
-                  <td style={s.td}>₹{Number(p.sqftPrice).toLocaleString()}</td>
-                  <td style={s.td}>{p.boxPrice ? `₹${Number(p.boxPrice).toLocaleString()}` : '—'}</td>
+                  <td style={s.td}>
+                    <span style={s.tableLocked}>🔒 Hidden</span>
+                  </td>
                   <td style={s.td}><StatusBadge status={p.status}/></td>
                   <td style={s.td}>
-                    <button style={s.btnView} onClick={() => setViewProp(p)}>📱 QR</button>
+                    <button style={s.btnView} onClick={() => setViewProp(p)}>View Details</button>
                   </td>
                 </tr>
               ))}
@@ -161,13 +164,12 @@ export default function BuyerDashboard() {
         </div>
       )}
 
-      {/* ── Image + QR Only Modal ── */}
+      {/* Modal */}
       {viewProp && (
         <div style={s.overlay} onClick={() => setViewProp(null)}>
           <div style={s.modal} onClick={e => e.stopPropagation()}>
             <button style={s.close} onClick={() => setViewProp(null)}>✕</button>
 
-            {/* Property Image */}
             {viewProp.images?.[0] && (
               <img
                 src={viewProp.images[0]}
@@ -176,27 +178,40 @@ export default function BuyerDashboard() {
               />
             )}
 
-            <div style={{ padding: '20px 24px', textAlign: 'center' }}>
+            <div style={{ padding: '20px 24px' }}>
               <p style={{ fontSize: 15, fontWeight: 700, color: '#222', marginBottom: 4 }}>
                 {viewProp.propertyName}
               </p>
-              <p style={{ fontSize: 12, color: '#888', marginBottom: 20 }}>
+              <p style={{ fontSize: 12, color: '#888', marginBottom: 4 }}>
                 📍 {viewProp.geoLocation} | {viewProp.bedroomType}
               </p>
+              <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
+                <StatusBadge status={viewProp.status}/>
+                {viewProp.verified === true && <span style={{ fontSize: 11 }}>✅ Verified</span>}
+              </div>
 
               {/* QR Code */}
               {viewProp.qrCode && (
                 <>
                   <div style={s.qrWrap}>
-                    <img
-                      src={viewProp.qrCode}
-                      alt="QR"
-                      style={{ width: 180, height: 180, display: 'block' }}
-                    />
+                    <img src={viewProp.qrCode} alt="QR" style={{ width: 160, height: 160, display: 'block' }}/>
                   </div>
-                  <p style={s.qrHint}>📱 Scan to view full property details</p>
+                  <p style={{ fontSize: 11, color: '#aaa', textAlign: 'center', marginBottom: 16 }}>
+                    📱 Scan to view full property details
+                  </p>
                 </>
               )}
+
+              {/* CTA Buttons */}
+              <div style={s.ctaStack}>
+                <button style={s.ctaUnlock} onClick={() => alert('Our team will contact you shortly!')}>
+                  🔒 Unlock Details — Contact Us
+                </button>
+                <button style={s.ctaTour} onClick={() => alert('Tour booked! We\'ll confirm your slot within 24 hours.')}>
+                  🏠 Schedule Tour — ₹2,000
+                </button>
+              </div>
+              <p style={s.ctaNote}>Tour fee is fully adjustable against purchase price</p>
             </div>
           </div>
         </div>
@@ -230,7 +245,7 @@ const s: Record<string, React.CSSProperties> = {
   input:       { flex: 1, padding: '9px 12px', border: '1px solid #ccc', borderRadius: 4, fontSize: 14, outline: 'none', minWidth: 200 },
   btnSearch:   { padding: '9px 20px', background: '#2980b9', color: 'white', border: 'none', borderRadius: 4, fontSize: 14, cursor: 'pointer', fontWeight: 500 },
   btnClear:    { padding: '9px 16px', background: '#f0f0f0', color: '#555', border: '1px solid #ccc', borderRadius: 4, fontSize: 14, cursor: 'pointer' },
-  btnView:     { padding: '5px 10px', background: '#f0f0f0', border: '1px solid #ddd', borderRadius: 4, fontSize: 12, cursor: 'pointer' },
+  btnView:     { padding: '5px 10px', background: '#2980b9', color: 'white', border: 'none', borderRadius: 4, fontSize: 12, cursor: 'pointer' },
   hint:        { fontSize: 11, color: '#2980b9', marginTop: 8 },
   resultInfo:  { fontSize: 13, color: '#555', marginBottom: 12 },
   viewToggle:  { display: 'flex', gap: 8, marginBottom: 16 },
@@ -242,6 +257,10 @@ const s: Record<string, React.CSSProperties> = {
   cardBody:    { padding: 14 },
   cardTitle:   { fontSize: 14, fontWeight: 700, color: '#222', marginBottom: 4 },
   cardSub:     { fontSize: 12, color: '#888', marginBottom: 2 },
+  lockedPrice: { display: 'flex', alignItems: 'center', gap: 6, marginTop: 6, padding: '5px 8px', background: '#f8f4ff', borderRadius: 4, border: '1px dashed #c9a6f5' },
+  lockIcon:    { fontSize: 11 },
+  lockText:    { fontSize: 11, color: '#8e44ad', fontWeight: 500 },
+  tableLocked: { fontSize: 12, color: '#8e44ad', fontWeight: 500 },
   empty:       { color: '#aaa', fontSize: 14, padding: 20, textAlign: 'center' },
   tableWrap:   { background: 'white', borderRadius: 8, overflow: 'hidden', boxShadow: '0 2px 6px rgba(0,0,0,0.06)' },
   table:       { width: '100%', borderCollapse: 'collapse' },
@@ -250,8 +269,11 @@ const s: Record<string, React.CSSProperties> = {
   td:          { padding: '11px 14px', fontSize: 13, color: '#444', borderBottom: '1px solid #f0f0f0' },
   // Modal
   overlay:     { position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 },
-  modal:       { background: 'white', borderRadius: 12, width: '90%', maxWidth: 360, position: 'relative', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', overflow: 'hidden' },
+  modal:       { background: 'white', borderRadius: 12, width: '90%', maxWidth: 380, position: 'relative', boxShadow: '0 8px 32px rgba(0,0,0,0.2)', overflow: 'hidden', maxHeight: '90vh', overflowY: 'auto' },
   close:       { position: 'absolute', top: 10, right: 12, background: 'rgba(0,0,0,0.4)', border: 'none', color: 'white', width: 28, height: 28, borderRadius: '50%', cursor: 'pointer', fontSize: 14, zIndex: 1 },
-  qrWrap:      { background: '#f8f8f8', borderRadius: 12, padding: 12, display: 'inline-block', marginBottom: 10 },
-  qrHint:      { fontSize: 12, color: '#888' },
+  qrWrap:      { background: '#f8f8f8', borderRadius: 12, padding: 12, display: 'flex', justifyContent: 'center', marginBottom: 8 },
+  ctaStack:    { display: 'flex', flexDirection: 'column', gap: 10 },
+  ctaUnlock:   { width: '100%', padding: '11px 0', background: '#2c3e50', color: 'white', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer', letterSpacing: '0.01em' },
+  ctaTour:     { width: '100%', padding: '11px 0', background: 'linear-gradient(135deg, #27ae60 0%, #1e8449 100%)', color: 'white', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer', letterSpacing: '0.01em' },
+  ctaNote:     { fontSize: 10, color: '#aaa', textAlign: 'center', marginTop: 8 },
 }
