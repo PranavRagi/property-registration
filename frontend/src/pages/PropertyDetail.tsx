@@ -18,8 +18,33 @@ export default function PropertyDetail({ id }: { id: string }) {
       .catch(() => setError('Could not load property.'))
   }, [id])
 
-  if (error)    return <div style={s.center}><p style={{ color: '#c0392b' }}>❌ {error}</p></div>
-  if (!property) return <div style={s.center}><p>Loading property...</p></div>
+  if (error) return (
+    <div style={s.center}>
+      <div style={s.errorBox}>
+        <div style={s.errorIcon}>🏠</div>
+        <h2 style={s.errorTitle}>Property Not Found</h2>
+        <p style={s.errorMsg}>
+          This listing may have been removed, or the link might be incorrect.
+        </p>
+        <p style={s.errorSub}>
+          Looking for a property? Visit our platform to browse all available listings.
+        </p>
+        <a href="https://property-registration.vercel.app" style={s.errorBtn}>
+          Browse Properties →
+        </a>
+      </div>
+    </div>
+  )
+
+  if (!property) return (
+    <div style={s.center}>
+      <div style={s.loadingBox}>
+        <div style={s.loadingSpinner}>🏠</div>
+        <p style={s.loadingTitle}>Loading property details...</p>
+        <p style={s.loadingSub}>Please wait a moment</p>
+      </div>
+    </div>
+  )
 
   function handleUnlockContact() {
     alert('Our team will reach out to connect you with the seller. Expect a call within 24 hours.')
@@ -63,39 +88,40 @@ export default function PropertyDetail({ id }: { id: string }) {
         {/* Price — hidden, replaced with lock banner */}
         <div style={s.priceLocked}>
           <div style={s.priceLockedHeader}>
-            <span style={{ fontSize: 16 }}>🔒</span>
-            <p style={s.priceLockedTitle}>Price details are hidden</p>
+            <span style={{ fontSize: 20 }}>🔒</span>
+            <p style={s.priceLockedTitle}>Interested in this property?</p>
           </div>
           <p style={s.priceLockedSub}>
-            Unlock sqft price, box price, and seller contact by reaching out to us.
+            Pricing and seller contact are shared only with verified buyers.
+            Schedule a tour or contact us — we'll take it from there.
           </p>
         </div>
 
         {/* CTA Buttons */}
         <div style={s.ctaStack}>
           <button style={s.ctaUnlock} onClick={handleUnlockContact}>
-            🔒 Unlock Details — Contact Us
+            🔒 Contact Us — Get Full Details
           </button>
           <button style={s.ctaTour} onClick={handleScheduleTour}>
-            🏠 Schedule Tour — ₹2,000
+            🏠 Schedule a Tour — ₹2,000
           </button>
         </div>
-        <p style={s.ctaNote}>Tour fee is fully adjustable against the purchase price</p>
+        <p style={s.ctaNote}>Details exclusively shared with verified buyers · Tour fee adjustable against purchase price</p>
 
         {/* Seller section — contact hidden */}
         <div style={s.sellerHidden}>
-          <p style={s.sellerTitle}>👤 Seller Info</p>
+          <p style={s.sellerTitle}>📞 Seller Contact</p>
           <div style={s.sellerRow}>
             <span style={s.sellerLabel}>Name</span>
-            <span style={s.sellerValue}>●●●●●●●● <span style={s.unlockHint}>(unlock to reveal)</span></span>
+            <span style={s.sellerValue}>●●●●●●●● <span style={s.unlockHint}>· verified buyer only</span></span>
           </div>
           <div style={s.sellerRow}>
             <span style={s.sellerLabel}>Mobile</span>
-            <span style={s.sellerValue}>+91 ●●●●●●●●●● <span style={s.unlockHint}>(unlock to reveal)</span></span>
+            <span style={s.sellerValue}>+91 ●●●●●●●●●● <span style={s.unlockHint}>· verified buyer only</span></span>
           </div>
           <div style={s.sellerRow}>
             <span style={s.sellerLabel}>Email</span>
-            <span style={s.sellerValue}>●●●●@●●●●.com <span style={s.unlockHint}>(unlock to reveal)</span></span>
+            <span style={s.sellerValue}>●●●●@●●●●.com <span style={s.unlockHint}>· verified buyer only</span></span>
           </div>
         </div>
       </div>
@@ -115,7 +141,19 @@ function Detail({ label, value }: { label: string; value: string }) {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  center:           { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' },
+  center:           { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f5', padding: 20 },
+  // Error state
+  errorBox:         { background: 'white', borderRadius: 16, padding: '40px 32px', maxWidth: 400, width: '100%', textAlign: 'center', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' },
+  errorIcon:        { fontSize: 52, marginBottom: 16 },
+  errorTitle:       { fontSize: 20, fontWeight: 700, color: '#222', marginBottom: 10 },
+  errorMsg:         { fontSize: 14, color: '#666', lineHeight: 1.6, marginBottom: 8 },
+  errorSub:         { fontSize: 12, color: '#aaa', lineHeight: 1.6, marginBottom: 24 },
+  errorBtn:         { display: 'inline-block', padding: '11px 24px', background: '#2c3e50', color: 'white', borderRadius: 8, fontSize: 14, fontWeight: 600, textDecoration: 'none' },
+  // Loading state
+  loadingBox:       { background: 'white', borderRadius: 16, padding: '40px 32px', maxWidth: 320, width: '100%', textAlign: 'center', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' },
+  loadingSpinner:   { fontSize: 48, marginBottom: 16, display: 'block', animation: 'pulse 1.5s ease-in-out infinite' },
+  loadingTitle:     { fontSize: 16, fontWeight: 600, color: '#333', marginBottom: 6 },
+  loadingSub:       { fontSize: 13, color: '#aaa' },
   page:             { minHeight: '100vh', background: '#f5f5f5', padding: 20, display: 'flex', justifyContent: 'center' },
   card:             { background: 'white', borderRadius: 8, padding: 24, width: '100%', maxWidth: 560, height: 'fit-content', boxShadow: '0 2px 12px rgba(0,0,0,0.08)' },
   id:               { fontSize: 11, color: '#aaa', marginBottom: 4 },
