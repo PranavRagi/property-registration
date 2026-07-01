@@ -1,5 +1,5 @@
 require('dotenv').config()
-const { connectDB, Property, Buyer, User, Admin, Message, Notification } = require('./db')
+const { connectDB, Property, Buyer, User, Admin, Message, Notification, AdminSettings } = require('./db')
 const express  = require('express')
 const cors     = require('cors')
 const multer   = require('multer')
@@ -151,7 +151,7 @@ app.post('/register', upload.array('images', 4), async (req, res) => {
     // })
     const images = (req.files || []).map(file => file.path)
 
-    // ✅ Declare propertyURL FIRST, then generate QR and upload to Cloudinary
+    //  Declare propertyURL FIRST, then generate QR and upload to Cloudinary
     const propertyURL = `${FRONTEND_URL}/property/${propertyID}`
     const qrBuffer    = await QRCode.toBuffer(propertyURL)
     const qrUpload    = await cloudinary.uploader.upload(
@@ -703,6 +703,44 @@ app.get('/admin/stats', verifyAdmin, async (req, res) => {
       verified:        properties.filter(p => p.verified === true).length,
       rejected:        properties.filter(p => p.verified === false).length
     })
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+// ── GET /admin/settings ───────────────────────────────────────────────────────
+app.get('/admin/settings', async (req, res) => {
+  try {
+    let settings = await AdminSettings.findOne({ id: 'admin-settings' })
+    if (!settings) {
+      // Return empty defaults if not set yet
+      settings = { contactName: '', contactPhone: '', contactEmail: '' }
+    }
+    res.json(settings)
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+})
+
+// ── POST /admin/settings ──────────────────────────────────────────────────────
+app.post('/admin/settings', verifyAdmin, async (req, res) => {
+  try {
+    const { contactName, contactPhone, contactEmail } = req.body
+    if (!contactName || !contactPhone || !contactEmail)
+      return res.status(400).json({ success: false, message: 'All fields required.' })
+
+    await AdminSettings.findOneAndUpdate(
+      { id: 'admin-settings' },
+      {
+        contactName,
+        contactPhone,
+        contactEmail,
+        updatedAt: new Date().toISOString()
+      },
+      { upsert: true, new: true }  // create if doesn't exist
+    )
+
+    console.log(`\n Admin Settings Updated`)
+    res.json({ success: true, message: 'Settings saved successfully.' })
   } catch (err) {
     res.status(500).json({ error: err.message })
   }

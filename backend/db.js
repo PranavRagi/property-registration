@@ -36,11 +36,13 @@ const PropertySchema = new mongoose.Schema({
   propertyURL:   String,
   ownerUsername: String,
   registeredAt:  String,
-  status:        { type: String, default: 'Available' },
-  // verified:      { type: mongoose.Schema.Types.Mixed, default: null },
-  verified: { type: Boolean, default: null },
-  verifiedAt:    String,
-  updatedAt:     String,
+  status: {type: String, default: 'Available'},
+  veridfied: {type: Boolean, default: null},
+  verifiedAt: String,
+  updatedAt: String,
+  floorNumber:{type: String, default: null},
+  totalFloors: {type: String, default: null},
+  isNegotiable: {type: Boolean, default: false},
 }, { _id: true })
 
 const UserSchema = new mongoose.Schema({
@@ -103,6 +105,14 @@ const NotificationSchema = new mongoose.Schema({
   timestamp: String,
 }, { _id: true })
 
+const AdminSettingSchema = new mongoose.Schema({
+    id: {type: String, default: 'admin-settings'},
+    contactName: {type: String, deault: ''},
+    contactPhone: {type: String, default:''},
+    contactEmail: {type: String, default:''},
+    updatedAt:{type: String, default:''},
+},{_id:true})
+
 // ── Models ────────────────────────────────────────────────────────────────────
 const Property     = mongoose.model('Property',     PropertySchema)
 const User         = mongoose.model('User',         UserSchema)
@@ -110,5 +120,6 @@ const Buyer        = mongoose.model('Buyer',        BuyerSchema)
 const Admin        = mongoose.model('Admin',        AdminSchema)
 const Message      = mongoose.model('Message',      MessageSchema)
 const Notification = mongoose.model('Notification', NotificationSchema)
+const AdminSetting = mongoose.model('AdminSettings',AdminSettingSchema)
 
-module.exports = { connectDB, Property, User, Buyer, Admin, Message, Notification }
+module.exports = { connectDB, Property, User, Buyer, Admin, Message, Notification, AdminSetting }

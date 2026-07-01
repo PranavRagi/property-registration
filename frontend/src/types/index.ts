@@ -15,6 +15,9 @@ export interface PropertyForm {
   contactNo:     string
   email:         string
   status:        string
+  floorNumber:   string
+  totalFloors:   string
+  isNegotiable:    boolean
 }
 
 export interface Property {

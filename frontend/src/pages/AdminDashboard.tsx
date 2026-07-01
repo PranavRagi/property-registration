@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getToken, logout } from '../utils/auth'
 
-type Tab = 'overview' | 'properties' | 'buyers' | 'users'
+type Tab = 'overview' | 'properties' | 'buyers' | 'users' | 'settings'
 
 const BACKEND = "https://property-registration-production.up.railway.app"
 
@@ -24,7 +24,13 @@ export default function AdminDashboard() {
   const [buyers,     setBuyers]     = useState<any[]>([])
   const [users,      setUsers]      = useState<any[]>([])
 
-  useEffect(() => { fetchStats(); fetchAll() }, [])
+  // Settings state
+  const [settings,      setSettings]      = useState({ contactName: '', contactPhone: '', contactEmail: '' })
+  const [settingsMsg,   setSettingsMsg]   = useState('')
+  const [settingsOk,    setSettingsOk]    = useState<boolean | null>(null)
+  const [settingsLoading, setSettingsLoading] = useState(false)
+
+  useEffect(() => { fetchStats(); fetchAll(); fetchSettings() }, [])
 
   async function fetchStats() {
     try {
@@ -38,12 +44,45 @@ export default function AdminDashboard() {
       const [pRes, bRes, uRes] = await Promise.all([
         adminFetch('/admin/properties'),
         adminFetch('/admin/buyers'),
-        adminFetch('/admin/users'),        
+        adminFetch('/admin/users'),
       ])
       if (pRes.ok) setProperties(await pRes.json())
       if (bRes.ok) setBuyers(await bRes.json())
       if (uRes.ok) setUsers(await uRes.json())
     } catch (err) { console.error('fetchAll error:', err) }
+  }
+
+  async function fetchSettings() {
+    try {
+      const res = await fetch(`${BACKEND}/admin/settings`)
+      if (res.ok) {
+        const data = await res.json()
+        setSettings({
+          contactName:  data.contactName  || '',
+          contactPhone: data.contactPhone || '',
+          contactEmail: data.contactEmail || '',
+        })
+      }
+    } catch (err) { console.error('fetchSettings error:', err) }
+  }
+
+  async function saveSettings() {
+    setSettingsLoading(true)
+    setSettingsMsg('')
+    try {
+      const res  = await adminFetch('/admin/settings', {
+        method: 'POST',
+        body:   JSON.stringify(settings)
+      })
+      const data = await res.json()
+      setSettingsOk(data.success)
+      setSettingsMsg(data.message)
+    } catch {
+      setSettingsOk(false)
+      setSettingsMsg('Could not save settings.')
+    } finally {
+      setSettingsLoading(false)
+    }
   }
 
   async function approveProperty(id: string) {
@@ -89,9 +128,13 @@ export default function AdminDashboard() {
       <nav style={s.nav}>
         <span style={s.brand}>🔐 Admin Panel</span>
         <div style={s.navLinks}>
-          {(['overview','properties','buyers','users'] as Tab[]).map(t => (
+          {(['overview','properties','buyers','users','settings'] as Tab[]).map(t => (
             <button key={t} style={{ ...s.navBtn, ...(tab === t ? s.navActive : {}) }} onClick={() => setTab(t)}>
-              {t === 'users' ? '👥 Users' : t.charAt(0).toUpperCase() + t.slice(1)}
+              {t === 'overview'    ? '📊 Overview'    :
+               t === 'properties' ? '🏠 Properties'  :
+               t === 'buyers'     ? '👤 Buyers'      :
+               t === 'users'      ? '👥 Users'       :
+                                    '⚙️ Settings'    }
             </button>
           ))}
           <button style={s.btnLogout} onClick={handleLogout}>Logout</button>
@@ -127,8 +170,12 @@ export default function AdminDashboard() {
                   <div>
                     <p style={s.name}>{p.propertyName}</p>
                     <p style={s.sub}>{p.geoLocation} | {p.bedroomType} | {p.ownerUsername || 'Unknown'}</p>
+                    {p.floorNumber && <p style={s.sub}>Floor {p.floorNumber}/{p.totalFloors}</p>}
                     <p style={s.id}>{p.propertyID}</p>
-                    <div style={{ marginTop: 4 }}>{verifiedBadge(p.verified)}</div>
+                    <div style={{ marginTop: 4, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                      {verifiedBadge(p.verified)}
+                      {p.isNegotiable && <span style={{ ...s.badge, background: '#2980b9' }}>💬 Negotiable</span>}
+                    </div>
                   </div>
                 </div>
                 <div style={s.actions}>
@@ -141,7 +188,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ── Buyers (registrations) ── */}
+        {/* ── Buyers ── */}
         {tab === 'buyers' && (
           <div>
             <h2 style={s.heading}>👤 Buyer Registrations ({buyers.length})</h2>
@@ -166,7 +213,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* ── Users (unified accounts) ── */}
+        {/* ── Users ── */}
         {tab === 'users' && (
           <div>
             <h2 style={s.heading}>👥 All Users ({users.length})</h2>
@@ -198,6 +245,84 @@ export default function AdminDashboard() {
             ))}
           </div>
         )}
+
+        {/* ── Settings ── */}
+        {tab === 'settings' && (
+          <div>
+            <h2 style={s.heading}>⚙️ Admin Settings</h2>
+            <p style={s.subNote}>
+              These contact details will be shown to buyers in Agent Mode instead of the seller's details.
+            </p>
+
+            <div style={s.settingsCard}>
+              <h3 style={s.settingsSection}>📞 Agent Contact Details</h3>
+
+              <div style={s.settingsField}>
+                <label style={s.settingsLabel}>Contact Name</label>
+                <input
+                  style={s.settingsInput}
+                  placeholder="e.g. Pranav — Property Registration"
+                  value={settings.contactName}
+                  onChange={e => setSettings(p => ({ ...p, contactName: e.target.value }))}
+                />
+              </div>
+
+              <div style={s.settingsField}>
+                <label style={s.settingsLabel}>Contact Phone</label>
+                <input
+                  style={s.settingsInput}
+                  placeholder="e.g. +91 9876543210"
+                  value={settings.contactPhone}
+                  onChange={e => setSettings(p => ({ ...p, contactPhone: e.target.value }))}
+                />
+              </div>
+
+              <div style={s.settingsField}>
+                <label style={s.settingsLabel}>Contact Email</label>
+                <input
+                  style={s.settingsInput}
+                  type="email"
+                  placeholder="e.g. contact@propertyregistration.in"
+                  value={settings.contactEmail}
+                  onChange={e => setSettings(p => ({ ...p, contactEmail: e.target.value }))}
+                />
+              </div>
+
+              {settingsMsg && (
+                <div style={{
+                  ...s.settingsMsg,
+                  background: settingsOk ? '#eef7f1' : '#fdf3f2',
+                  color:      settingsOk ? '#27ae60' : '#c0392b',
+                  border:     `1px solid ${settingsOk ? '#27ae60' : '#e74c3c'}`
+                }}>
+                  {settingsMsg}
+                </div>
+              )}
+
+              <button
+                style={s.settingsSaveBtn}
+                onClick={saveSettings}
+                disabled={settingsLoading}
+              >
+                {settingsLoading ? 'Saving...' : '💾 Save Settings'}
+              </button>
+            </div>
+
+            {/* Preview */}
+            {(settings.contactName || settings.contactPhone || settings.contactEmail) && (
+              <div style={s.settingsPreview}>
+                <p style={s.settingsPreviewTitle}>👁️ Preview — How buyers will see it in Agent Mode</p>
+                <div style={s.previewCard}>
+                  <p style={{ fontSize: 12, color: '#888', marginBottom: 8 }}>📞 Agent Contact</p>
+                  <p style={{ fontSize: 15, fontWeight: 700, color: '#222', marginBottom: 4 }}>{settings.contactName || '—'}</p>
+                  <p style={{ fontSize: 13, color: '#555', marginBottom: 2 }}>{settings.contactPhone || '—'}</p>
+                  <p style={{ fontSize: 13, color: '#2980b9' }}>{settings.contactEmail || '—'}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
       </div>
     </div>
   )
@@ -213,26 +338,37 @@ function StatCard({ label, value, color }: { label: string; value: number; color
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page:      { minHeight: '100vh', background: '#f0f4f8' },
-  nav:       { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 28px', background: '#1a252f', color: 'white', position: 'sticky', top: 0, zIndex: 100 },
-  brand:     { fontSize: 18, fontWeight: 700, color: 'white' },
-  navLinks:  { display: 'flex', gap: 8, alignItems: 'center' },
-  navBtn:    { padding: '7px 14px', background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', borderRadius: 4, fontSize: 13, cursor: 'pointer' },
-  navActive: { background: 'white', color: '#1a252f', fontWeight: 700 },
-  btnLogout: { padding: '7px 14px', background: '#e74c3c', color: 'white', border: 'none', borderRadius: 4, fontSize: 13, cursor: 'pointer' },
-  content:   { maxWidth: 900, margin: '0 auto', padding: 24 },
-  heading:   { fontSize: 18, fontWeight: 700, color: '#222', marginBottom: 4 },
-  subNote:   { fontSize: 12, color: '#888', marginBottom: 16 },
-  statsGrid: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginTop: 16 },
-  item:      { background: 'white', borderRadius: 8, padding: '14px 16px', marginBottom: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' },
-  itemLeft:  { display: 'flex', gap: 12, alignItems: 'center' },
-  thumb:     { width: 48, height: 48, objectFit: 'cover', borderRadius: 6, border: '1px solid #eee', flexShrink: 0 },
-  avatar:    { width: 40, height: 40, borderRadius: '50%', background: '#2c3e50', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0 },
-  name:      { fontSize: 14, fontWeight: 600, color: '#222', marginBottom: 2 },
-  sub:       { fontSize: 12, color: '#888', marginBottom: 2 },
-  id:        { fontSize: 11, color: '#bbb' },
-  actions:   { display: 'flex', gap: 6, flexWrap: 'wrap' },
-  btn2:      { padding: '6px 12px', color: 'white', border: 'none', borderRadius: 4, fontSize: 12, cursor: 'pointer', fontWeight: 500 },
-  badge:     { padding: '2px 8px', borderRadius: 20, fontSize: 11, color: 'white', fontWeight: 600 },
-  empty:     { color: '#aaa', fontSize: 14, textAlign: 'center', padding: '40px 0' },
+  page:              { minHeight: '100vh', background: '#f0f4f8' },
+  nav:               { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px 28px', background: '#1a252f', color: 'white', position: 'sticky', top: 0, zIndex: 100 },
+  brand:             { fontSize: 18, fontWeight: 700, color: 'white' },
+  navLinks:          { display: 'flex', gap: 8, alignItems: 'center' },
+  navBtn:            { padding: '7px 14px', background: 'rgba(255,255,255,0.1)', color: 'white', border: '1px solid rgba(255,255,255,0.3)', borderRadius: 4, fontSize: 13, cursor: 'pointer' },
+  navActive:         { background: 'white', color: '#1a252f', fontWeight: 700 },
+  btnLogout:         { padding: '7px 14px', background: '#e74c3c', color: 'white', border: 'none', borderRadius: 4, fontSize: 13, cursor: 'pointer' },
+  content:           { maxWidth: 900, margin: '0 auto', padding: 24 },
+  heading:           { fontSize: 18, fontWeight: 700, color: '#222', marginBottom: 4 },
+  subNote:           { fontSize: 12, color: '#888', marginBottom: 16 },
+  statsGrid:         { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginTop: 16 },
+  item:              { background: 'white', borderRadius: 8, padding: '14px 16px', marginBottom: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' },
+  itemLeft:          { display: 'flex', gap: 12, alignItems: 'center' },
+  thumb:             { width: 48, height: 48, objectFit: 'cover', borderRadius: 6, border: '1px solid #eee', flexShrink: 0 },
+  avatar:            { width: 40, height: 40, borderRadius: '50%', background: '#2c3e50', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, flexShrink: 0 },
+  name:              { fontSize: 14, fontWeight: 600, color: '#222', marginBottom: 2 },
+  sub:               { fontSize: 12, color: '#888', marginBottom: 2 },
+  id:                { fontSize: 11, color: '#bbb' },
+  actions:           { display: 'flex', gap: 6, flexWrap: 'wrap' },
+  btn2:              { padding: '6px 12px', color: 'white', border: 'none', borderRadius: 4, fontSize: 12, cursor: 'pointer', fontWeight: 500 },
+  badge:             { padding: '2px 8px', borderRadius: 20, fontSize: 11, color: 'white', fontWeight: 600 },
+  empty:             { color: '#aaa', fontSize: 14, textAlign: 'center', padding: '40px 0' },
+  // Settings
+  settingsCard:      { background: 'white', borderRadius: 12, padding: '28px 24px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)', marginBottom: 20 },
+  settingsSection:   { fontSize: 15, fontWeight: 700, color: '#222', marginBottom: 20, paddingBottom: 12, borderBottom: '1px solid #eee' },
+  settingsField:     { marginBottom: 16 },
+  settingsLabel:     { display: 'block', fontSize: 13, fontWeight: 500, color: '#555', marginBottom: 5 },
+  settingsInput:     { width: '100%', padding: '10px 12px', border: '1px solid #ddd', borderRadius: 6, fontSize: 14, outline: 'none', boxSizing: 'border-box' },
+  settingsMsg:       { padding: '10px 14px', borderRadius: 6, fontSize: 13, marginBottom: 16, textAlign: 'center' },
+  settingsSaveBtn:   { padding: '11px 28px', background: '#1a252f', color: 'white', border: 'none', borderRadius: 6, fontSize: 14, fontWeight: 600, cursor: 'pointer' },
+  settingsPreview:   { background: 'white', borderRadius: 12, padding: '20px 24px', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' },
+  settingsPreviewTitle: { fontSize: 13, fontWeight: 600, color: '#888', marginBottom: 12 },
+  previewCard:       { background: '#f0f7ff', borderRadius: 8, padding: '14px 16px', display: 'inline-block', minWidth: 240 },
 }

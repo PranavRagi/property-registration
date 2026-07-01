@@ -45,6 +45,7 @@ export default defineConfig({
       '/admin/seller':        { target: BACKEND, changeOrigin: true },
       '/admin/user':          { target: BACKEND, changeOrigin: true },
       '/admin/regenerate-qr': { target: BACKEND, changeOrigin: true },
+      '/admin/settings':      { target: BACKEND, changeOrigin: true },
 
       // ── Buyer ─────────────────────────────────────────────
       // bypass GET /buyer/:id to React (buyer detail page)
