@@ -125,7 +125,7 @@ app.post('/register', upload.array('images', 4), async (req, res) => {
   try {
     const { propertyName, sellerName, geoLocation, size, bedroomType,
             propertyType, positionDate, propertyAge, sqftPrice,
-            boxPrice, neighbourhood, contactNo, email } = req.body
+            boxPrice, neighbourhood, contactNo, email, floorNumber, totalFloors, isNegotiable } = req.body
 
     const count     = await Property.countDocuments()
     const duplicate = await Property.findOne({
@@ -168,6 +168,9 @@ app.post('/register', upload.array('images', 4), async (req, res) => {
       neighbourhood, geoLocation, sellerName, contactNo, email,
       images, qrCode, propertyURL,
       ownerUsername: req.body.ownerUsername || '',
+      floorNumber: floorNumber || null,
+      totalFloors: totalFloors || null,
+      isNegotiable: isNegotiable === true || isNegotiable === 'true' ? true : false,
       registeredAt:  new Date().toISOString()
     })
 
