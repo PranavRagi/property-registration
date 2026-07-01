@@ -277,33 +277,36 @@ function AgentMode({ properties, adminSettings }: { properties: Property[]; admi
   )
 
   return (
-    <div>
+    <>
+    <div style={s.agentStage}>
       <div style={s.agentHeader}>
         <h2 style={s.agentTitle}> Agent Mode</h2>
         <p style={s.agentSub}>Present properties to your client. Select up to 4 to compare.</p>
       </div>
 
       {/* ── Slideshow ── */}
-      <div style={s.slideWrap}>
+      <div style={s.slideCard}>
 
-        {/* Left Arrow */}
-        <button
-          style={{ ...s.arrow, opacity: current === 0 ? 0.3 : 1 }}
-          onClick={() => setCurrent(c => Math.max(0, c - 1))}
-          disabled={current === 0}
-        >
-          ‹
-        </button>
-
-        {/* Property Card */}
-        <div style={s.slideCard}>
-
-          {/* Image */}
-          {p.images?.[0] && (
-            <div style={s.slideImgWrap}>
-              <img src={p.images[0]} alt="property" style={s.slideImg}/>
-            </div>
-          )}
+        {/* Image + nav arrows */}
+        {p.images?.[0] && (
+          <div style={s.slideImgWrap}>
+            <img src={p.images[0]} alt="property" style={s.slideImg}/>
+            <button
+              style={{ ...s.arrow, ...s.arrowOnCard, left: 8, opacity: current === 0 ? 0.35 : 1 }}
+              onClick={() => setCurrent(c => Math.max(0, c - 1))}
+              disabled={current === 0}
+            >
+              ‹
+            </button>
+            <button
+              style={{ ...s.arrow, ...s.arrowOnCard, right: 8, opacity: current === properties.length - 1 ? 0.35 : 1 }}
+              onClick={() => setCurrent(c => Math.min(properties.length - 1, c + 1))}
+              disabled={current === properties.length - 1}
+            >
+              ›
+            </button>
+          </div>
+        )}
 
           {/* Badge row */}
           <div style={s.slideBadgeRow}>
@@ -363,16 +366,6 @@ function AgentMode({ properties, adminSettings }: { properties: Property[]; admi
           >
             {compareIds.includes(p.propertyID) ? '✅ Added to Compare' : '+ Add to Compare'}
           </button>
-        </div>
-
-        {/* Right Arrow */}
-        <button
-          style={{ ...s.arrow, opacity: current === properties.length - 1 ? 0.3 : 1 }}
-          onClick={() => setCurrent(c => Math.min(properties.length - 1, c + 1))}
-          disabled={current === properties.length - 1}
-        >
-          ›
-        </button>
       </div>
 
       {/* Dot Navigation */}
@@ -386,6 +379,7 @@ function AgentMode({ properties, adminSettings }: { properties: Property[]; admi
         ))}
       </div>
       <p style={s.slideCount}>{current + 1} of {properties.length}</p>
+    </div>
 
       {/* ── Comparison Table ── */}
       {compareList.length > 0 && (
@@ -464,7 +458,7 @@ function AgentMode({ properties, adminSettings }: { properties: Property[]; admi
           <p>☝️ Click <b>"+ Add to Compare"</b> on any property card to start comparing. You can select up to 4.</p>
         </div>
       )}
-    </div>
+    </>
   )
 }
 
@@ -539,15 +533,16 @@ const s: Record<string, React.CSSProperties> = {
   ctaTour:        { width: '100%', padding: '11px 0', background: 'linear-gradient(135deg, #27ae60 0%, #1e8449 100%)', color: 'white', border: 'none', borderRadius: 8, fontSize: 14, fontWeight: 600, cursor: 'pointer' },
   ctaNote:        { fontSize: 10, color: '#aaa', textAlign: 'center', marginTop: 8 },
   // Agent Mode
-  agentHeader:    { marginBottom: 20 },
+  agentStage:     { maxWidth: 420, margin: '0 auto' },
+  agentHeader:    { marginBottom: 16, textAlign: 'center' },
   agentTitle:     { fontSize: 20, fontWeight: 700, color: '#222', marginBottom: 4 },
   agentSub:       { fontSize: 13, color: '#888' },
   agentEmpty:     { textAlign: 'center', padding: '60px 0' },
-  slideWrap:      { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 10 },
-  arrow:          { width: 32, height: 32, borderRadius: '50%', border: '2px solid #ddd', background: 'white', fontSize: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', color: '#2c3e50', fontWeight: 700 },
-  slideCard:      { flex: '0 1 420px', maxWidth: 420, width: '100%', background: 'white', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', border: '1px solid #eee' },
-  slideImgWrap:   { width: '100%', height: 220, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f5' },
-  slideImg:       { maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', display: 'block' },
+  arrow:          { width: 32, height: 32, borderRadius: '50%', border: 'none', background: 'rgba(255,255,255,0.92)', fontSize: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.15)', color: '#2c3e50', fontWeight: 700 },
+  arrowOnCard:    { position: 'absolute', top: '50%', transform: 'translateY(-50%)', zIndex: 2 },
+  slideCard:      { background: 'white', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', border: '1px solid #eee' },
+  slideImgWrap:   { position: 'relative', width: '100%', aspectRatio: '16 / 10', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f0f0f0' },
+  slideImg:       { width: '100%', height: '100%', objectFit: 'contain', display: 'block' },
   slideBadgeRow:  { display: 'flex', gap: 4, padding: '8px 12px 0', flexWrap: 'wrap' },
   verifiedBadge:  { fontSize: 9, fontWeight: 600, color: '#27ae60' },
   negoBadge:      { padding: '2px 4px', borderRadius: 20, fontSize: 9, fontWeight: 600, color: 'white', background: '#2980b9' },
