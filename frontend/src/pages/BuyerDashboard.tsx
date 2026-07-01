@@ -416,7 +416,14 @@ function AgentMode({ properties, adminSettings }: { properties: Property[]; admi
                   { label: '🏢 Floor',      key: 'floor',        render: (pr: any) => pr.floorNumber && pr.totalFloors ? `${pr.floorNumber}/${pr.totalFloors}` : '—' },
                   { label: '📍 Location',   key: 'geoLocation',  render: (pr: any) => pr.geoLocation.split(',')[0] },
                   { label: '🏘 Area',       key: 'neighbourhood',render: (pr: any) => pr.neighbourhood },
-                  { label: '💰 Price',      key: 'price',        render: (pr: any) => pr.isNegotiable ? 'Negotiable' : pr.sqftPrice ? `₹${Number(pr.sqftPrice).toLocaleString()}/sqft` : '—' },
+                  { label: '💰 Price',      key: 'price',        render: (pr: any) => (
+                    <div style={{ fontSize: '12px', lineHeight: 1.4 }}>
+                      {pr.isNegotiable && <div style={{ color: '#27ae60', fontWeight: 600 }}>Negotiable</div>}
+                      {pr.boxPrice && <div>₹{Number(pr.boxPrice).toLocaleString()}</div>}
+                      {pr.sqftPrice && <div style={{ color: '#888' }}>₹{Number(pr.sqftPrice).toLocaleString()}/sqft</div>}
+                      {!pr.boxPrice && !pr.sqftPrice && !pr.isNegotiable && '—'}
+                    </div>
+                  )},
                   { label: '✅ Status',     key: 'status',       render: (pr: any) => pr.status || '—' },
                   { label: '🔵 Verified',   key: 'verified',     render: (pr: any) => pr.verified === true ? '✅ Yes' : pr.verified === false ? '❌ No' : '🟡 Pending' },
                 ].map(row => (
