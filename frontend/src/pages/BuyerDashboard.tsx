@@ -300,7 +300,9 @@ function AgentMode({ properties, adminSettings }: { properties: Property[]; admi
 
           {/* Image */}
           {p.images?.[0] && (
-            <img src={p.images[0]} alt="property" style={s.slideImg}/>
+            <div style={s.slideImgWrap}>
+              <img src={p.images[0]} alt="property" style={s.slideImg}/>
+            </div>
           )}
 
           {/* Badge row */}
@@ -541,10 +543,11 @@ const s: Record<string, React.CSSProperties> = {
   agentTitle:     { fontSize: 20, fontWeight: 700, color: '#222', marginBottom: 4 },
   agentSub:       { fontSize: 13, color: '#888' },
   agentEmpty:     { textAlign: 'center', padding: '60px 0' },
-  slideWrap:      { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 },
+  slideWrap:      { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, marginBottom: 10 },
   arrow:          { width: 32, height: 32, borderRadius: '50%', border: '2px solid #ddd', background: 'white', fontSize: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', color: '#2c3e50', fontWeight: 700 },
-  slideCard:      { flex: 1, background: 'white', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', border: '1px solid #eee' },
-  slideImg:       { width: '100%', height: 160, objectFit: 'contain', background: '#f5f5f5' },
+  slideCard:      { flex: '0 1 420px', maxWidth: 420, width: '100%', background: 'white', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', border: '1px solid #eee' },
+  slideImgWrap:   { width: '100%', height: 220, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f5' },
+  slideImg:       { maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', display: 'block' },
   slideBadgeRow:  { display: 'flex', gap: 4, padding: '8px 12px 0', flexWrap: 'wrap' },
   verifiedBadge:  { fontSize: 9, fontWeight: 600, color: '#27ae60' },
   negoBadge:      { padding: '2px 4px', borderRadius: 20, fontSize: 9, fontWeight: 600, color: 'white', background: '#2980b9' },
@@ -555,7 +558,7 @@ const s: Record<string, React.CSSProperties> = {
   slideContactTitle: { fontSize: 11, fontWeight: 600, color: '#2980b9', marginBottom: 6, textTransform: 'uppercase', letterSpacing: '0.05em' },
   slideContactName:  { fontSize: 15, fontWeight: 700, color: '#222', marginBottom: 4 },
   slideContactDetail:{ fontSize: 13, color: '#555', marginBottom: 2 },
-  compareBtn:     { margin: '0 20px 20px', width: 'calc(100% - 40px)', padding: '10px 0', borderRadius: 8, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer' },
+  compareBtn:     { margin: '0 12px 12px', width: 'calc(100% - 24px)', padding: '10px 0', borderRadius: 8, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer' },
   compareBtnOn:   { background: '#eef7f1', color: '#27ae60', border: '1px solid #27ae60' },
   compareBtnOff:  { background: '#f8f9fa', color: '#555', border: '1px solid #ddd' },
   dots:           { display: 'flex', justifyContent: 'center', gap: 6, marginBottom: 6 },
