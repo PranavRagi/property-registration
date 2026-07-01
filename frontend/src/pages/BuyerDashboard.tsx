@@ -544,7 +544,7 @@ const s: Record<string, React.CSSProperties> = {
   slideWrap:      { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 },
   arrow:          { width: 32, height: 32, borderRadius: '50%', border: '2px solid #ddd', background: 'white', fontSize: 18, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.08)', color: '#2c3e50', fontWeight: 700 },
   slideCard:      { flex: 1, background: 'white', borderRadius: 16, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.1)', border: '1px solid #eee' },
-  slideImg:       { width: '100%', height: 140, objectFit: 'cover' },
+  slideImg:       { width: '100%', height: 160, objectFit: 'contain', background: '#f5f5f5' },
   slideBadgeRow:  { display: 'flex', gap: 4, padding: '8px 12px 0', flexWrap: 'wrap' },
   verifiedBadge:  { fontSize: 9, fontWeight: 600, color: '#27ae60' },
   negoBadge:      { padding: '2px 4px', borderRadius: 20, fontSize: 9, fontWeight: 600, color: 'white', background: '#2980b9' },
