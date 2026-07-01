@@ -9,7 +9,7 @@ A full-stack real estate web application inspired by 99acres and MagicBricks, bu
 | Service | URL |
 |---|---|
 | Frontend | https://property-registration.vercel.app |
-| Backend API | https://your-railway-app.up.railway.app |
+
 
 ---
 
