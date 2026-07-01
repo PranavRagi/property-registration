@@ -713,11 +713,15 @@ app.get('/admin/settings', async (req, res) => {
     let settings = await AdminSettings.findOne({ id: 'admin-settings' })
     if (!settings) {
       // Return empty defaults if not set yet
-      settings = { contactName: '', contactPhone: '', contactEmail: '' }
+      res.json({ contactName: '', contactPhone: '', contactEmail: '' })
+      return
     }
-    res.json(settings)
+    // Convert to plain object and remove _id etc.
+    const { contactName, contactPhone, contactEmail } = settings.toObject()
+    res.json({ contactName, contactPhone, contactEmail })
   } catch (err) {
-    res.status(500).json({ error: err.message })
+    console.error('Error fetching admin settings:',err)
+    res.status(500).json({error:err.message})
   }
 })
 

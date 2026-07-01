@@ -40,9 +40,12 @@ export interface Property {
   propertyURL:   string
   registeredAt:  string
   status:        string
-  ownerUsername: string      // ← add this
-  verified?:     boolean     // ← add this
-  updatedAt?:    string      // ← add this
+  ownerUsername: string      
+  verified?:     boolean     
+  updatedAt?:    string      
+  floorNumber?:  string      
+  totalFloors?: string      
+  isNegotiable?: boolean    
 }
 
 export interface BuyerForm {
