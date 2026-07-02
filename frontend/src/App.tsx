@@ -67,7 +67,7 @@ export default function App() {
   function openChatFromNotif(roomID: string) { setChatRoom(roomID); setPage('messages') }
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: '#f5f5f5' }}>
+    <div className="app-shell">
 
       {/* Sidebar */}
       <Sidebar
@@ -78,7 +78,7 @@ export default function App() {
       />
 
       {/* Main content */}
-      <div style={{ marginLeft: 240, flex: 1, minHeight: '100vh', transition: 'margin 0.3s ease' }}>
+      <div className="app-main">
 
         {/* Top bar */}
         <div style={s.topBar}>
@@ -87,7 +87,7 @@ export default function App() {
         </div>
 
         {/* Pages */}
-        <div>
+        <div className="page-content" style={s.pageContent}>
           {page === 'dashboard'       && currentMode === 'seller' && <SellerDashboard/>}
           {page === 'dashboard'       && currentMode === 'buyer'  && <BuyerDashboard/>}
           {page === 'seller-register' && <SellerForm   editProperty={editProperty} onSaved={() => { setEditProperty(null); setPage('my-properties') }}/>}
@@ -117,26 +117,37 @@ function BuyerDetailPage({ id }: { id: string }) {
       .catch(() => setError('Could not load buyer.'))
   }, [id])
 
-  if (error)  return <div style={{ display:'flex', justifyContent:'center', alignItems:'center', minHeight:'100vh' }}><p style={{ color:'#c0392b' }}>❌ {error}</p></div>
-  if (!buyer) return <div style={{ display:'flex', justifyContent:'center', alignItems:'center', minHeight:'100vh' }}><p>Loading...</p></div>
+  if (error)  return (
+    <div style={s.standaloneCenter}>
+      <div style={s.errorBox}>❌ {error}</div>
+    </div>
+  )
+  if (!buyer) return (
+    <div style={s.standaloneCenter}>
+      <div style={s.loadingBox}>
+        <div style={s.spinner}/>
+        <p style={s.loadingText}>Loading...</p>
+      </div>
+    </div>
+  )
 
   return (
-    <div style={{ minHeight:'100vh', background:'#f5f5f5', padding:24, display:'flex', justifyContent:'center', alignItems:'center' }}>
-      <div style={{ background:'white', borderRadius:8, padding:28, width:'100%', maxWidth:480, boxShadow:'0 2px 12px rgba(0,0,0,0.08)' }}>
-        <div style={{ width:64, height:64, borderRadius:'50%', background:'#2c3e50', color:'white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:28, fontWeight:700, margin:'0 auto 16px' }}>
+    <div style={s.standalonePage}>
+      <div style={s.detailCard}>
+        <div style={s.detailAvatar}>
           {buyer.fullName.charAt(0).toUpperCase()}
         </div>
-        <h1 style={{ fontSize:22, fontWeight:700, textAlign:'center', marginBottom:4 }}>{buyer.fullName}</h1>
-        <p style={{ fontSize:11, color:'#aaa', textAlign:'center', marginBottom:20 }}>{buyer.buyerID}</p>
-        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:4 }}>
+        <h1 style={s.detailName}>{buyer.fullName}</h1>
+        <p style={s.detailId}>{buyer.buyerID}</p>
+        <div style={s.detailGrid}>
           {[['Mobile', buyer.mobile], ['Email', buyer.email], ['City', buyer.preferredCity],
             ['Type', buyer.preferredType],
             ['Budget Min', `₹${Number(buyer.budgetMin).toLocaleString()}`],
             ['Budget Max', `₹${Number(buyer.budgetMax).toLocaleString()}`]
           ].map(([l, v]) => (
-            <div key={l} style={{ padding:'8px 0', borderBottom:'1px solid #f0f0f0' }}>
-              <p style={{ fontSize:11, color:'#aaa' }}>{l}</p>
-              <p style={{ fontSize:13, fontWeight:500 }}>{v}</p>
+            <div key={l} style={s.detailRow}>
+              <p style={s.detailLabel}>{l}</p>
+              <p style={s.detailValue}>{v}</p>
             </div>
           ))}
         </div>
@@ -146,7 +157,22 @@ function BuyerDetailPage({ id }: { id: string }) {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  topBar:   { background: 'white', padding: '14px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #eee', position: 'sticky', top: 0, zIndex: 100 },
-  topTitle: { fontSize: 16, fontWeight: 700, color: '#222' },
-  topUser:  { fontSize: 13, color: '#888' },
+  topBar:        { background: 'var(--color-surface)', padding: 'var(--space-3) var(--space-6)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--color-border)', position: 'sticky', top: 0, zIndex: 100, boxShadow: 'var(--shadow-sm)' },
+  topTitle:      { fontSize: 15, fontWeight: 600, color: 'var(--color-text)', letterSpacing: '-0.01em' },
+  topUser:       { fontSize: 13, color: 'var(--color-text-muted)', fontWeight: 500 },
+  pageContent:   { padding: 'var(--space-6)', maxWidth: 1400, margin: '0 auto' },
+  standaloneCenter: { display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: 'var(--color-bg)', padding: 'var(--space-6)' },
+  standalonePage:   { minHeight: '100vh', background: 'var(--color-bg)', padding: 'var(--space-6)', display: 'flex', justifyContent: 'center', alignItems: 'center' },
+  errorBox:      { padding: 'var(--space-4) var(--space-5)', background: 'var(--color-danger-bg)', color: 'var(--color-danger-dark)', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-danger)', fontSize: 14, fontWeight: 500 },
+  loadingBox:    { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--space-3)' },
+  spinner:       { width: 32, height: 32, border: '3px solid var(--color-border)', borderTopColor: 'var(--color-accent)', borderRadius: '50%', animation: 'spin 0.8s linear infinite' },
+  loadingText:   { fontSize: 14, color: 'var(--color-text-muted)', fontWeight: 500 },
+  detailCard:    { background: 'var(--color-surface)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-8) var(--space-6)', width: '100%', maxWidth: 480, boxShadow: 'var(--shadow-md)', border: '1px solid var(--color-border)' },
+  detailAvatar:  { width: 64, height: 64, borderRadius: '50%', background: 'var(--color-primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, fontWeight: 700, margin: '0 auto var(--space-4)' },
+  detailName:    { fontSize: 22, fontWeight: 700, textAlign: 'center', marginBottom: 'var(--space-1)', color: 'var(--color-text)', letterSpacing: '-0.02em' },
+  detailId:      { fontSize: 11, color: 'var(--color-text-muted)', textAlign: 'center', marginBottom: 'var(--space-5)', fontFamily: 'monospace' },
+  detailGrid:    { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--space-1)' },
+  detailRow:     { padding: 'var(--space-2) 0', borderBottom: '1px solid var(--color-border)' },
+  detailLabel:   { fontSize: 11, color: 'var(--color-text-muted)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.04em', marginBottom: 2 },
+  detailValue:   { fontSize: 14, fontWeight: 500, color: 'var(--color-text)' },
 }

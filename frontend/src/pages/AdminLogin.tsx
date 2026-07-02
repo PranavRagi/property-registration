@@ -101,9 +101,9 @@ export default function AdminLogin({ onLogin }: Props) {
         {message && (
           <div style={{
             ...s.msg,
-            background: success ? '#eef7f1' : '#fdf3f2',
-            color:      success ? '#27ae60' : '#c0392b',
-            border:     `1px solid ${success ? '#27ae60' : '#c0392b'}`
+            background: success ? 'var(--color-success-bg)' : 'var(--color-danger-bg)',
+            color:      success ? 'var(--color-success)' : 'var(--color-danger-dark)',
+            border:     `1px solid ${success ? 'var(--color-success)' : 'var(--color-danger)'}`
           }}>
             {message}
           </div>
@@ -118,17 +118,17 @@ export default function AdminLogin({ onLogin }: Props) {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page:      { minHeight: '100vh', background: '#1a252f', display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  card:      { background: 'white', borderRadius: 8, padding: '36px 32px', width: 380 },
-  icon:      { fontSize: 36, textAlign: 'center', marginBottom: 8 },
-  title:     { fontSize: 20, fontWeight: 700, color: '#222', textAlign: 'center', marginBottom: 4 },
-  sub:       { fontSize: 12, color: '#e74c3c', textAlign: 'center', marginBottom: 20, fontWeight: 500 },
-  tabs:      { display: 'flex', border: '1px solid #ddd', borderRadius: 4, overflow: 'hidden', marginBottom: 20 },
-  tab:       { flex: 1, padding: 9, background: '#f8f8f8', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 500, color: '#888' },
-  tabActive: { background: '#1a252f', color: 'white' },
-  field:     { marginBottom: 14 },
-  label:     { display: 'block', fontSize: 13, fontWeight: 500, color: '#555', marginBottom: 4 },
-  input:     { width: '100%', padding: '9px 12px', border: '1px solid #ccc', borderRadius: 4, fontSize: 14, outline: 'none', boxSizing: 'border-box' },
-  msg:       { padding: '10px 14px', borderRadius: 4, fontSize: 13, marginBottom: 14, textAlign: 'center' },
-  btn:       { width: '100%', padding: 11, background: '#1a252f', color: 'white', border: 'none', borderRadius: 4, fontSize: 15, fontWeight: 600, cursor: 'pointer' }
+  page:      { minHeight: '100vh', background: 'linear-gradient(145deg, var(--color-primary-dark) 0%, #0d1117 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--space-5)' },
+  card:      { background: 'var(--color-surface)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-8) var(--space-6)', width: '100%', maxWidth: 400, boxShadow: 'var(--shadow-xl)', border: '1px solid var(--color-border)' },
+  icon:      { fontSize: 40, textAlign: 'center', marginBottom: 'var(--space-2)' },
+  title:     { fontSize: 22, fontWeight: 700, color: 'var(--color-text)', textAlign: 'center', marginBottom: 'var(--space-1)', letterSpacing: '-0.02em' },
+  sub:       { fontSize: 12, color: 'var(--color-danger)', textAlign: 'center', marginBottom: 'var(--space-5)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em' },
+  tabs:      { display: 'flex', background: 'var(--color-surface-muted)', borderRadius: 'var(--radius-sm)', padding: 3, marginBottom: 'var(--space-5)', border: '1px solid var(--color-border)' },
+  tab:       { flex: 1, padding: '10px var(--space-4)', background: 'transparent', border: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 500, color: 'var(--color-text-muted)', borderRadius: 5 },
+  tabActive: { background: 'var(--color-primary-dark)', color: 'white', fontWeight: 600, boxShadow: 'var(--shadow-sm)' },
+  field:     { marginBottom: 'var(--space-4)' },
+  label:     { display: 'block', fontSize: 13, fontWeight: 500, color: 'var(--color-text-secondary)', marginBottom: 'var(--space-1)' },
+  input:     { width: '100%', padding: '10px var(--space-3)', border: '1px solid var(--color-border-strong)', borderRadius: 'var(--radius-sm)', fontSize: 14, outline: 'none', boxSizing: 'border-box', background: 'var(--color-surface)' },
+  msg:       { padding: '10px var(--space-3)', borderRadius: 'var(--radius-sm)', fontSize: 13, marginBottom: 'var(--space-4)', textAlign: 'center', fontWeight: 500 },
+  btn:       { width: '100%', padding: '12px var(--space-4)', background: 'var(--color-primary-dark)', color: 'white', border: 'none', borderRadius: 'var(--radius-sm)', fontSize: 15, fontWeight: 600, cursor: 'pointer', boxShadow: 'var(--shadow-sm)' },
 }

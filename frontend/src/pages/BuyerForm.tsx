@@ -203,15 +203,15 @@ function Row({ children }: { children: React.ReactNode }) {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page:      { minHeight: '100vh', background: '#f5f5f5', padding: 24, display: 'flex', justifyContent: 'center' },
-  card:      { background: 'white', border: '1px solid #ddd', borderRadius: 8, padding: '32px 28px', width: '100%', maxWidth: 640, height: 'fit-content' },
-  title:     { fontSize: 22, fontWeight: 700, color: '#222', marginBottom: 4 },
-  sub:       { fontSize: 13, color: '#999', marginBottom: 24 },
-  input:     { width: '100%', padding: '9px 12px', border: '1px solid #ccc', borderRadius: 4, fontSize: 14, fontFamily: 'sans-serif', outline: 'none', boxSizing: 'border-box' },
-  err:       { fontSize: 11, color: '#c0392b', marginTop: 3 },
-  error:     { background: '#fdf3f2', border: '1px solid #c0392b', color: '#c0392b', padding: '10px 14px', borderRadius: 4, fontSize: 13, marginBottom: 14 },
-  actions:   { display: 'flex', gap: 10, marginBottom: 20 },
-  btnCancel: { flex: 1, padding: 10, background: '#f0f0f0', border: '1px solid #ccc', borderRadius: 4, fontSize: 14, cursor: 'pointer', fontWeight: 500, color: '#555' },
-  btnSubmit: { flex: 1, padding: 10, background: '#2c3e50', color: 'white', border: 'none', borderRadius: 4, fontSize: 14, cursor: 'pointer', fontWeight: 600 },
-  result:    { background: '#f7fdf9', border: '1px solid #27ae60', borderRadius: 6, padding: 20, textAlign: 'center' }
+  page:      { display: 'flex', justifyContent: 'center' },
+  card:      { background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-8) var(--space-6)', width: '100%', maxWidth: 640, height: 'fit-content', boxShadow: 'var(--shadow-sm)' },
+  title:     { fontSize: 22, fontWeight: 700, color: 'var(--color-text)', marginBottom: 'var(--space-1)', letterSpacing: '-0.02em' },
+  sub:       { fontSize: 13, color: 'var(--color-text-muted)', marginBottom: 'var(--space-6)' },
+  input:     { width: '100%', padding: '10px var(--space-3)', border: '1px solid var(--color-border-strong)', borderRadius: 'var(--radius-sm)', fontSize: 14, fontFamily: 'inherit', outline: 'none', boxSizing: 'border-box', background: 'var(--color-surface)' },
+  err:       { fontSize: 11, color: 'var(--color-danger-dark)', marginTop: 3 },
+  error:     { background: 'var(--color-danger-bg)', border: '1px solid var(--color-danger)', color: 'var(--color-danger-dark)', padding: '10px var(--space-3)', borderRadius: 'var(--radius-sm)', fontSize: 13, marginBottom: 'var(--space-3)', fontWeight: 500 },
+  actions:   { display: 'flex', gap: 'var(--space-3)', marginBottom: 'var(--space-5)' },
+  btnCancel: { flex: 1, padding: '10px var(--space-4)', background: 'var(--color-surface-muted)', border: '1px solid var(--color-border-strong)', borderRadius: 'var(--radius-sm)', fontSize: 14, cursor: 'pointer', fontWeight: 500, color: 'var(--color-text-secondary)' },
+  btnSubmit: { flex: 1, padding: '10px var(--space-4)', background: 'var(--color-primary)', color: 'white', border: 'none', borderRadius: 'var(--radius-sm)', fontSize: 14, cursor: 'pointer', fontWeight: 600, boxShadow: 'var(--shadow-sm)' },
+  result:    { background: 'var(--color-success-bg)', border: '1px solid var(--color-success)', borderRadius: 'var(--radius-md)', padding: 'var(--space-5)', textAlign: 'center' },
 }

@@ -39,7 +39,7 @@ export default function PropertyDetail({ id }: { id: string }) {
   if (!property) return (
     <div style={s.center}>
       <div style={s.loadingBox}>
-        <div style={s.loadingSpinner}>🏠</div>
+        <div style={s.loadingSpinner}/>
         <p style={s.loadingTitle}>Loading property details...</p>
         <p style={s.loadingSub}>Please wait a moment</p>
       </div>
@@ -141,43 +141,38 @@ function Detail({ label, value }: { label: string; value: string }) {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  center:           { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f5', padding: 20 },
-  // Error state
-  errorBox:         { background: 'white', borderRadius: 16, padding: '40px 32px', maxWidth: 400, width: '100%', textAlign: 'center', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' },
-  errorIcon:        { fontSize: 52, marginBottom: 16 },
-  errorTitle:       { fontSize: 20, fontWeight: 700, color: '#222', marginBottom: 10 },
-  errorMsg:         { fontSize: 14, color: '#666', lineHeight: 1.6, marginBottom: 8 },
-  errorSub:         { fontSize: 12, color: '#aaa', lineHeight: 1.6, marginBottom: 24 },
-  errorBtn:         { display: 'inline-block', padding: '11px 24px', background: '#2c3e50', color: 'white', borderRadius: 8, fontSize: 14, fontWeight: 600, textDecoration: 'none' },
-  // Loading state
-  loadingBox:       { background: 'white', borderRadius: 16, padding: '40px 32px', maxWidth: 320, width: '100%', textAlign: 'center', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' },
-  loadingSpinner:   { fontSize: 48, marginBottom: 16, display: 'block', animation: 'pulse 1.5s ease-in-out infinite' },
-  loadingTitle:     { fontSize: 16, fontWeight: 600, color: '#333', marginBottom: 6 },
-  loadingSub:       { fontSize: 13, color: '#aaa' },
-  page:             { minHeight: '100vh', background: '#f5f5f5', padding: 20, display: 'flex', justifyContent: 'center' },
-  card:             { background: 'white', borderRadius: 8, padding: 24, width: '100%', maxWidth: 560, height: 'fit-content', boxShadow: '0 2px 12px rgba(0,0,0,0.08)' },
-  id:               { fontSize: 11, color: '#aaa', marginBottom: 4 },
-  title:            { fontSize: 22, fontWeight: 700, color: '#222', marginBottom: 16 },
-  imgGrid:          { marginBottom: 20, display: 'flex', flexDirection: 'column', gap: 8 },
-  imgMain:          { width: '100%', height: 220, objectFit: 'cover', borderRadius: 6, cursor: 'pointer' },
-  imgRow:           { display: 'flex', gap: 8 },
-  imgSub:           { flex: 1, height: 90, objectFit: 'cover', borderRadius: 4, cursor: 'pointer' },
-  grid:             { display: 'grid', gridTemplateColumns: '1fr 1fr', marginBottom: 16 },
-  // Price locked
-  priceLocked:      { background: '#f8f4ff', border: '1px dashed #c9a6f5', borderRadius: 8, padding: '14px 16px', marginBottom: 16 },
-  priceLockedHeader:{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 },
+  center:           { minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--color-bg)', padding: 'var(--space-5)' },
+  errorBox:         { background: 'var(--color-surface)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-8) var(--space-6)', maxWidth: 400, width: '100%', textAlign: 'center', boxShadow: 'var(--shadow-md)', border: '1px solid var(--color-border)' },
+  errorIcon:        { fontSize: 48, marginBottom: 'var(--space-4)' },
+  errorTitle:       { fontSize: 20, fontWeight: 700, color: 'var(--color-text)', marginBottom: 'var(--space-3)', letterSpacing: '-0.02em' },
+  errorMsg:         { fontSize: 14, color: 'var(--color-text-secondary)', lineHeight: 1.6, marginBottom: 'var(--space-2)' },
+  errorSub:         { fontSize: 12, color: 'var(--color-text-muted)', lineHeight: 1.6, marginBottom: 'var(--space-6)' },
+  errorBtn:         { display: 'inline-block', padding: '11px var(--space-6)', background: 'var(--color-primary)', color: 'white', borderRadius: 'var(--radius-md)', fontSize: 14, fontWeight: 600, textDecoration: 'none', boxShadow: 'var(--shadow-sm)' },
+  loadingBox:       { background: 'var(--color-surface)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-8) var(--space-6)', maxWidth: 320, width: '100%', textAlign: 'center', boxShadow: 'var(--shadow-md)', border: '1px solid var(--color-border)' },
+  loadingSpinner:   { width: 40, height: 40, border: '3px solid var(--color-border)', borderTopColor: 'var(--color-accent)', borderRadius: '50%', animation: 'spin 0.8s linear infinite', margin: '0 auto var(--space-4)' },
+  loadingTitle:     { fontSize: 16, fontWeight: 600, color: 'var(--color-text)', marginBottom: 6 },
+  loadingSub:       { fontSize: 13, color: 'var(--color-text-muted)' },
+  page:             { minHeight: '100vh', background: 'var(--color-bg)', padding: 'var(--space-5)', display: 'flex', justifyContent: 'center' },
+  card:             { background: 'var(--color-surface)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-6)', width: '100%', maxWidth: 560, height: 'fit-content', boxShadow: 'var(--shadow-md)', border: '1px solid var(--color-border)' },
+  id:               { fontSize: 11, color: 'var(--color-text-muted)', marginBottom: 'var(--space-1)', fontFamily: 'monospace' },
+  title:            { fontSize: 22, fontWeight: 700, color: 'var(--color-text)', marginBottom: 'var(--space-4)', letterSpacing: '-0.02em' },
+  imgGrid:          { marginBottom: 'var(--space-5)', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)' },
+  imgMain:          { width: '100%', height: 220, objectFit: 'cover', borderRadius: 'var(--radius-sm)', cursor: 'pointer' },
+  imgRow:           { display: 'flex', gap: 'var(--space-2)' },
+  imgSub:           { flex: 1, height: 90, objectFit: 'cover', borderRadius: 'var(--radius-sm)', cursor: 'pointer' },
+  grid:             { display: 'grid', gridTemplateColumns: '1fr 1fr', marginBottom: 'var(--space-4)' },
+  priceLocked:      { background: '#f8f4ff', border: '1px dashed #c9a6f5', borderRadius: 'var(--radius-md)', padding: 'var(--space-3) var(--space-4)', marginBottom: 'var(--space-4)' },
+  priceLockedHeader:{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 6 },
   priceLockedTitle: { fontSize: 14, fontWeight: 600, color: '#6c3483', margin: 0 },
-  priceLockedSub:   { fontSize: 12, color: '#8e44ad', lineHeight: 1.5, margin: 0 },
-  // CTA
-  ctaStack:         { display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 8 },
-  ctaUnlock:        { width: '100%', padding: '13px 0', background: '#2c3e50', color: 'white', border: 'none', borderRadius: 8, fontSize: 15, fontWeight: 600, cursor: 'pointer', letterSpacing: '0.01em' },
-  ctaTour:          { width: '100%', padding: '13px 0', background: 'linear-gradient(135deg, #27ae60 0%, #1e8449 100%)', color: 'white', border: 'none', borderRadius: 8, fontSize: 15, fontWeight: 600, cursor: 'pointer', letterSpacing: '0.01em' },
-  ctaNote:          { fontSize: 11, color: '#aaa', textAlign: 'center', marginBottom: 20 },
-  // Seller hidden
-  sellerHidden:     { background: '#f8f9fa', borderRadius: 6, padding: '14px 16px' },
-  sellerTitle:      { fontWeight: 700, color: '#555', marginBottom: 10, fontSize: 13 },
-  sellerRow:        { display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 8, marginBottom: 8, borderBottom: '1px solid #eee' },
-  sellerLabel:      { fontSize: 12, color: '#aaa', fontWeight: 500 },
-  sellerValue:      { fontSize: 13, color: '#bbb', letterSpacing: '0.05em' },
+  priceLockedSub:   { fontSize: 12, color: 'var(--color-purple)', lineHeight: 1.5, margin: 0 },
+  ctaStack:         { display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', marginBottom: 'var(--space-2)' },
+  ctaUnlock:        { width: '100%', padding: '13px 0', background: 'var(--color-primary)', color: 'white', border: 'none', borderRadius: 'var(--radius-md)', fontSize: 15, fontWeight: 600, cursor: 'pointer', letterSpacing: '0.01em' },
+  ctaTour:          { width: '100%', padding: '13px 0', background: 'linear-gradient(135deg, var(--color-success) 0%, #1e8449 100%)', color: 'white', border: 'none', borderRadius: 'var(--radius-md)', fontSize: 15, fontWeight: 600, cursor: 'pointer', letterSpacing: '0.01em' },
+  ctaNote:          { fontSize: 11, color: 'var(--color-text-muted)', textAlign: 'center', marginBottom: 'var(--space-5)' },
+  sellerHidden:     { background: 'var(--color-surface-muted)', borderRadius: 'var(--radius-sm)', padding: 'var(--space-3) var(--space-4)', border: '1px solid var(--color-border)' },
+  sellerTitle:      { fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: 'var(--space-3)', fontSize: 13 },
+  sellerRow:        { display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 'var(--space-2)', marginBottom: 'var(--space-2)', borderBottom: '1px solid var(--color-border)' },
+  sellerLabel:      { fontSize: 12, color: 'var(--color-text-muted)', fontWeight: 500 },
+  sellerValue:      { fontSize: 13, color: 'var(--color-text-placeholder)', letterSpacing: '0.05em' },
   unlockHint:       { fontSize: 10, color: '#c9a6f5', fontStyle: 'italic', letterSpacing: 0 },
 }

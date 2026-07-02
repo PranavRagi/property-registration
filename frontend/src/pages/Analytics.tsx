@@ -84,9 +84,9 @@ function StatCard({ label, value, color, icon }: {
   label: string; value: string | number; color: string; icon: string
 }) {
   return (
-    <div style={{ background: 'white', borderRadius: 8, padding: '16px 20px', borderLeft: `4px solid ${color}`, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-      <p style={{ fontSize: 12, color: '#888', marginBottom: 4 }}>{icon} {label}</p>
-      <p style={{ fontSize: 26, fontWeight: 700, color: '#222' }}>{value}</p>
+    <div style={{ background: 'var(--color-surface)', borderRadius: 'var(--radius-md)', padding: 'var(--space-4) var(--space-5)', borderLeft: `4px solid ${color}`, boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border)', borderLeftWidth: 4 }}>
+      <p style={{ fontSize: 12, color: 'var(--color-text-muted)', marginBottom: 4, fontWeight: 500 }}>{icon} {label}</p>
+      <p style={{ fontSize: 26, fontWeight: 700, color: 'var(--color-text)', letterSpacing: '-0.02em' }}>{value}</p>
     </div>
   )
 }
@@ -94,8 +94,8 @@ function StatCard({ label, value, color, icon }: {
 // ── Chart Card ────────────────────────────────────────────────────────────────
 function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div style={{ background: 'white', borderRadius: 8, padding: 20, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-      <h3 style={{ fontSize: 14, fontWeight: 600, color: '#444', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+    <div style={{ background: 'var(--color-surface)', borderRadius: 'var(--radius-md)', padding: 'var(--space-5)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border)' }}>
+      <h3 style={{ fontSize: 13, fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: 'var(--space-4)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
         {title}
       </h3>
       {children}
@@ -269,9 +269,9 @@ export default function Analytics() {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page:       { padding:'24px 28px', background:'#f5f5f5', minHeight:'calc(100vh - 56px)' },
-  pageTitle:  { fontSize:22, fontWeight:700, color:'#222', marginBottom:24 },
-  statsGrid:  { display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px, 1fr))', gap:14, marginBottom:24 },
-  chartsGrid: { display:'grid', gridTemplateColumns:'1fr 1fr', gap:16, marginBottom:20 },
-  empty:      { fontSize:13, color:'#aaa', textAlign:'center', padding:'20px 0' },
+  page:       { padding: 0, minHeight: 'calc(100vh - 120px)' },
+  pageTitle:  { fontSize: 22, fontWeight: 700, color: 'var(--color-text)', marginBottom: 'var(--space-6)', letterSpacing: '-0.02em' },
+  statsGrid:  { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 'var(--space-3)', marginBottom: 'var(--space-6)' },
+  chartsGrid: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--space-4)', marginBottom: 'var(--space-5)' },
+  empty:      { fontSize: 13, color: 'var(--color-text-muted)', textAlign: 'center', padding: 'var(--space-8) 0', background: 'var(--color-surface)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--color-border)' },
 }

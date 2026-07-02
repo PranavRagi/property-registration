@@ -101,7 +101,7 @@ export default function NotificationBell({ onOpenChat }: Props) {
           {notifications.slice(0, 10).map(n => (
             <div
               key={n.id}
-              style={{ ...s.notifItem, background: n.read ? 'white' : '#eef7f1' }}
+              style={{ ...s.notifItem, background: n.read ? 'var(--color-surface)' : 'var(--color-success-bg)' }}
               onClick={() => handleNotifClick(n)}
             >
               {/* Unread dot */}
@@ -123,15 +123,15 @@ export default function NotificationBell({ onOpenChat }: Props) {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  bell:       { position: 'relative', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.4)', borderRadius: 4, padding: '6px 10px', cursor: 'pointer', fontSize: 16, color: 'white' },
-  badge:      { position: 'absolute', top: -6, right: -6, background: '#e74c3c', color: 'white', borderRadius: '50%', width: 18, height: 18, fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  dropdown:   { position: 'absolute', top: 44, right: 0, width: 300, background: 'white', borderRadius: 8, boxShadow: '0 4px 20px rgba(0,0,0,0.15)', zIndex: 1000, overflow: 'hidden' },
-  dropHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 14px', borderBottom: '1px solid #f0f0f0' },
-  dropTitle:  { fontSize: 14, fontWeight: 700, color: '#222' },
-  clearBtn:   { background: 'none', border: 'none', fontSize: 12, color: '#2980b9', cursor: 'pointer', fontWeight: 500 },
-  notifItem:  { padding: '10px 14px', borderBottom: '1px solid #f5f5f5', cursor: 'pointer', transition: 'background 0.15s' },
-  notifMsg:   { fontSize: 13, color: '#333', marginBottom: 3 },
-  notifTime:  { fontSize: 11, color: '#aaa' },
-  unreadDot:  { width: 8, height: 8, borderRadius: '50%', background: '#27ae60', flexShrink: 0, marginTop: 4 },
-  empty:      { padding: 20, textAlign: 'center', fontSize: 13, color: '#aaa' }
+  bell:       { position: 'relative', background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 'var(--radius-sm)', padding: 'var(--space-2) var(--space-3)', cursor: 'pointer', fontSize: 15, color: 'white' },
+  badge:      { position: 'absolute', top: -6, right: -6, background: 'var(--color-danger)', color: 'white', borderRadius: '50%', width: 18, height: 18, fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 4px rgba(231,76,60,0.4)' },
+  dropdown:   { position: 'absolute', top: 44, right: 0, width: 320, background: 'var(--color-surface)', borderRadius: 'var(--radius-md)', boxShadow: 'var(--shadow-lg)', zIndex: 1000, overflow: 'hidden', border: '1px solid var(--color-border)' },
+  dropHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--space-3) var(--space-4)', borderBottom: '1px solid var(--color-border)', background: 'var(--color-surface-muted)' },
+  dropTitle:  { fontSize: 14, fontWeight: 600, color: 'var(--color-text)' },
+  clearBtn:   { background: 'none', border: 'none', fontSize: 12, color: 'var(--color-accent)', cursor: 'pointer', fontWeight: 500 },
+  notifItem:  { padding: 'var(--space-3) var(--space-4)', borderBottom: '1px solid var(--color-border)', cursor: 'pointer', transition: 'background var(--transition)' },
+  notifMsg:   { fontSize: 13, color: 'var(--color-text)', marginBottom: 3, lineHeight: 1.4 },
+  notifTime:  { fontSize: 11, color: 'var(--color-text-muted)' },
+  unreadDot:  { width: 8, height: 8, borderRadius: '50%', background: 'var(--color-success)', flexShrink: 0, marginTop: 4 },
+  empty:      { padding: 'var(--space-8) var(--space-5)', textAlign: 'center', fontSize: 13, color: 'var(--color-text-muted)' },
 }

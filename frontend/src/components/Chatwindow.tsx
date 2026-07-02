@@ -375,37 +375,27 @@ export default function ChatWindow({ roomID, onClose, propertyID = null }: Props
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 const s: Record<string, React.CSSProperties> = {
-  window:      { display: 'flex', flexDirection: 'column', height: '100%', background: '#fafafa', borderRadius: 8, overflow: 'hidden', border: '1px solid #e0e0e0', position: 'relative' },
-
-  // Header
-  header:      { display: 'flex', alignItems: 'center', gap: 10, padding: '12px 16px', background: '#2c3e50', flexShrink: 0 },
-  avatar:      { width: 40, height: 40, borderRadius: '50%', background: '#27ae60', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 16, flexShrink: 0 },
-  avatarSmall: { width: 28, height: 28, borderRadius: '50%', background: '#7f8c8d', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 12, marginRight: 6, flexShrink: 0, alignSelf: 'flex-end' },
-  headerName:  { fontSize: 15, fontWeight: 700, color: 'white' },
+  window:      { display: 'flex', flexDirection: 'column', height: '100%', background: 'var(--color-surface-muted)', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--color-border)', position: 'relative' },
+  header:      { display: 'flex', alignItems: 'center', gap: 'var(--space-3)', padding: 'var(--space-3) var(--space-4)', background: 'var(--color-primary)', flexShrink: 0 },
+  avatar:      { width: 40, height: 40, borderRadius: '50%', background: 'var(--color-success)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: 15, flexShrink: 0 },
+  avatarSmall: { width: 28, height: 28, borderRadius: '50%', background: 'var(--color-text-muted)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, fontSize: 11, marginRight: 6, flexShrink: 0, alignSelf: 'flex-end' },
+  headerName:  { fontSize: 15, fontWeight: 600, color: 'white' },
   typingText:  { fontSize: 11, color: '#2ecc71', fontStyle: 'italic' },
   onlineText:  { fontSize: 11, color: 'rgba(255,255,255,0.5)' },
-  closeBtn:    { background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', borderRadius: 4, padding: '4px 8px', cursor: 'pointer', fontSize: 14 },
-
-  // Property banner
-  propBanner:  { padding: '6px 16px', background: '#eef7f1', borderBottom: '1px solid #d5eedd', fontSize: 12, color: '#27ae60', flexShrink: 0 },
-
-  // Messages
-  messageList: { flex: 1, overflowY: 'auto', padding: '16px 12px', display: 'flex', flexDirection: 'column' },
+  closeBtn:    { background: 'rgba(255,255,255,0.12)', border: 'none', color: 'white', borderRadius: 'var(--radius-sm)', padding: '4px var(--space-2)', cursor: 'pointer', fontSize: 14 },
+  propBanner:  { padding: '6px var(--space-4)', background: 'var(--color-success-bg)', borderBottom: '1px solid #d5eedd', fontSize: 12, color: 'var(--color-success)', flexShrink: 0, fontWeight: 500 },
+  messageList: { flex: 1, overflowY: 'auto', padding: 'var(--space-4) var(--space-3)', display: 'flex', flexDirection: 'column' },
   loadingWrap: { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' },
-  loadingText: { fontSize: 13, color: '#aaa' },
-  emptyWrap:   { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 8 },
-  emptyText:   { fontSize: 14, color: '#888' },
-  bubble:      { maxWidth: '70%', padding: '10px 14px', wordBreak: 'break-word' },
-
-  // Input
-  inputBar:    { display: 'flex', gap: 8, padding: '10px 12px', background: 'white', borderTop: '1px solid #eee', alignItems: 'center', flexShrink: 0 },
-  attachBtn:   { padding: '8px 10px', background: '#f0f0f0', border: 'none', borderRadius: 4, cursor: 'pointer', fontSize: 16, flexShrink: 0 },
-  textInput:   { flex: 1, padding: '9px 12px', border: '1px solid #ccc', borderRadius: 20, fontSize: 14, outline: 'none', background: '#f8f8f8' },
-  sendBtn:       { padding: '9px 14px', background: '#2c3e50', color: 'white', border: 'none', borderRadius: 20, cursor: 'pointer', fontSize: 16, fontWeight: 700, flexShrink: 0, transition: 'opacity 0.2s' },
-
-  // File preview modal
-  previewOverlay: { position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, borderRadius: 8 },
-  previewBox:     { background: 'white', borderRadius: 12, padding: 24, display: 'flex', flexDirection: 'column', alignItems: 'center', boxShadow: '0 8px 32px rgba(0,0,0,0.25)', maxWidth: 360, width: '90%' },
-  previewCancel:  { flex: 1, padding: '9px 0', background: '#f0f0f0', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: 600, color: '#555' },
-  previewSend:    { flex: 1, padding: '9px 0', background: '#2c3e50', border: 'none', borderRadius: 6, cursor: 'pointer', fontWeight: 600, color: 'white' },
+  loadingText: { fontSize: 13, color: 'var(--color-text-muted)' },
+  emptyWrap:   { flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 'var(--space-2)' },
+  emptyText:   { fontSize: 14, color: 'var(--color-text-muted)' },
+  bubble:      { maxWidth: '70%', padding: '10px var(--space-3)', wordBreak: 'break-word', borderRadius: 'var(--radius-md)' },
+  inputBar:    { display: 'flex', gap: 'var(--space-2)', padding: '10px var(--space-3)', background: 'var(--color-surface)', borderTop: '1px solid var(--color-border)', alignItems: 'center', flexShrink: 0 },
+  attachBtn:   { padding: '8px 10px', background: 'var(--color-surface-muted)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontSize: 16, flexShrink: 0 },
+  textInput:   { flex: 1, padding: '9px var(--space-3)', border: '1px solid var(--color-border-strong)', borderRadius: 20, fontSize: 14, outline: 'none', background: 'var(--color-surface-muted)' },
+  sendBtn:     { padding: '9px var(--space-3)', background: 'var(--color-primary)', color: 'white', border: 'none', borderRadius: 20, cursor: 'pointer', fontSize: 16, fontWeight: 700, flexShrink: 0, transition: 'opacity var(--transition)' },
+  previewOverlay: { position: 'absolute', inset: 0, background: 'rgba(26,37,47,0.55)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100, borderRadius: 'var(--radius-md)' },
+  previewBox:  { background: 'var(--color-surface)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-6)', display: 'flex', flexDirection: 'column', alignItems: 'center', boxShadow: 'var(--shadow-xl)', maxWidth: 360, width: '90%', border: '1px solid var(--color-border)' },
+  previewCancel: { flex: 1, padding: '9px 0', background: 'var(--color-surface-muted)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontWeight: 600, color: 'var(--color-text-secondary)' },
+  previewSend: { flex: 1, padding: '9px 0', background: 'var(--color-primary)', border: 'none', borderRadius: 'var(--radius-sm)', cursor: 'pointer', fontWeight: 600, color: 'white' },
 }

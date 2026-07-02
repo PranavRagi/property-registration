@@ -43,16 +43,16 @@ export default function ModeSelect({ username, onSelect }: Props) {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page:    { minHeight: '100vh', background: 'linear-gradient(135deg, #1a252f 0%, #2c3e50 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 },
-  card:    { background: 'white', borderRadius: 16, padding: '40px 36px', width: '100%', maxWidth: 560, boxShadow: '0 20px 60px rgba(0,0,0,0.3)', textAlign: 'center' },
-  wave:    { fontSize: 48, marginBottom: 12 },
-  title:   { fontSize: 24, fontWeight: 700, color: '#222', marginBottom: 8 },
-  sub:     { fontSize: 15, color: '#888', marginBottom: 32 },
-  options: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 24 },
-  option:  { background: '#f8f9fa', border: '2px solid #eee', borderRadius: 12, padding: '24px 20px', cursor: 'pointer', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 8, transition: 'all 0.2s' },
-  optIcon: { fontSize: 36 },
-  optTitle:{ fontSize: 16, fontWeight: 700, color: '#222' },
-  optDesc: { fontSize: 12, color: '#888', lineHeight: 1.5 },
-  optBtn:  { fontSize: 13, color: '#2980b9', fontWeight: 600, marginTop: 4 },
-  hint:    { fontSize: 12, color: '#aaa' },
+  page:    { minHeight: '100vh', background: 'linear-gradient(145deg, var(--color-primary-dark) 0%, var(--color-primary) 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'var(--space-5)' },
+  card:    { background: 'var(--color-surface)', borderRadius: 'var(--radius-xl)', padding: 'var(--space-8) var(--space-6)', width: '100%', maxWidth: 580, boxShadow: 'var(--shadow-xl)', textAlign: 'center', border: '1px solid var(--color-border)' },
+  wave:    { fontSize: 44, marginBottom: 'var(--space-3)' },
+  title:   { fontSize: 26, fontWeight: 700, color: 'var(--color-text)', marginBottom: 'var(--space-2)', letterSpacing: '-0.02em' },
+  sub:     { fontSize: 15, color: 'var(--color-text-muted)', marginBottom: 'var(--space-8)' },
+  options: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-4)', marginBottom: 'var(--space-6)' },
+  option:  { background: 'var(--color-surface-muted)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-lg)', padding: 'var(--space-6) var(--space-5)', cursor: 'pointer', textAlign: 'left', display: 'flex', flexDirection: 'column', gap: 'var(--space-2)', transition: 'border-color var(--transition), box-shadow var(--transition)' },
+  optIcon: { fontSize: 32 },
+  optTitle:{ fontSize: 16, fontWeight: 600, color: 'var(--color-text)' },
+  optDesc: { fontSize: 13, color: 'var(--color-text-muted)', lineHeight: 1.55 },
+  optBtn:  { fontSize: 13, color: 'var(--color-accent)', fontWeight: 600, marginTop: 'var(--space-1)' },
+  hint:    { fontSize: 12, color: 'var(--color-text-muted)', background: 'var(--color-surface-muted)', padding: 'var(--space-3) var(--space-4)', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)' },
 }

@@ -182,9 +182,9 @@ function PropertyCard({ property: p }: { property: Property }) {
 
 function StatCard({ label, value, color }: { label: string; value: number; color: string }) {
   return (
-    <div style={{ background: 'white', borderRadius: 8, padding: '16px 20px', borderLeft: `4px solid ${color}`, boxShadow: '0 2px 6px rgba(0,0,0,0.06)' }}>
-      <p style={{ fontSize: 12, color: '#888', marginBottom: 4 }}>{label}</p>
-      <p style={{ fontSize: 28, fontWeight: 700, color }}>{value}</p>
+    <div style={{ background: 'var(--color-surface)', borderRadius: 'var(--radius-md)', padding: 'var(--space-4) var(--space-5)', borderLeft: `4px solid ${color}`, boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border)', borderLeftWidth: 4 }}>
+      <p style={{ fontSize: 12, color: 'var(--color-text-muted)', marginBottom: 4, fontWeight: 500 }}>{label}</p>
+      <p style={{ fontSize: 24, fontWeight: 700, color: 'var(--color-text)', letterSpacing: '-0.02em' }}>{value}</p>
     </div>
   )
 }
@@ -195,32 +195,32 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 const s: Record<string, React.CSSProperties> = {
-  page:        { padding: 24, maxWidth: 1100, margin: '0 auto' },
-  heading:     { fontSize: 20, fontWeight: 700, color: '#222', marginBottom: 16 },
-  subHeading:  { fontSize: 15, fontWeight: 600, color: '#333', marginBottom: 12 },
-  statsGrid:   { display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 12, marginBottom: 24 },
-  searchBox:   { background: 'white', borderRadius: 8, padding: 20, marginBottom: 16, border: '1px solid #eee', boxShadow: '0 2px 6px rgba(0,0,0,0.04)' },
-  searchRow:   { display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' },
-  select:      { padding: '9px 12px', border: '1px solid #ccc', borderRadius: 4, fontSize: 14, outline: 'none', background: 'white' },
-  input:       { flex: 1, padding: '9px 12px', border: '1px solid #ccc', borderRadius: 4, fontSize: 14, outline: 'none', minWidth: 200 },
-  btnSearch:   { padding: '9px 20px', background: '#2c3e50', color: 'white', border: 'none', borderRadius: 4, fontSize: 14, cursor: 'pointer', fontWeight: 500 },
-  btnClear:    { padding: '9px 16px', background: '#f0f0f0', color: '#555', border: '1px solid #ccc', borderRadius: 4, fontSize: 14, cursor: 'pointer' },
-  hint:        { fontSize: 11, color: '#2980b9', marginTop: 8 },
-  resultInfo:  { fontSize: 13, color: '#555', marginBottom: 12 },
-  viewToggle:  { display: 'flex', gap: 8, marginBottom: 16 },
-  toggleBtn:   { padding: '7px 16px', background: '#f0f0f0', border: '1px solid #ddd', borderRadius: 4, fontSize: 13, cursor: 'pointer' },
-  toggleActive:{ background: '#2c3e50', color: 'white', border: '1px solid #2c3e50' },
-  cardsGrid:   { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 16 },
-  card:        { background: 'white', borderRadius: 8, overflow: 'hidden', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', border: '1px solid #eee' },
+  page:        { padding: 0, maxWidth: 1100, margin: '0 auto' },
+  heading:     { fontSize: 20, fontWeight: 700, color: 'var(--color-text)', marginBottom: 'var(--space-4)', letterSpacing: '-0.02em' },
+  subHeading:  { fontSize: 15, fontWeight: 600, color: 'var(--color-text-secondary)', marginBottom: 'var(--space-3)' },
+  statsGrid:   { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 'var(--space-3)', marginBottom: 'var(--space-6)' },
+  searchBox:   { background: 'var(--color-surface)', borderRadius: 'var(--radius-md)', padding: 'var(--space-5)', marginBottom: 'var(--space-4)', border: '1px solid var(--color-border)', boxShadow: 'var(--shadow-sm)' },
+  searchRow:   { display: 'flex', gap: 'var(--space-3)', alignItems: 'center', flexWrap: 'wrap' },
+  select:      { padding: '10px var(--space-3)', border: '1px solid var(--color-border-strong)', borderRadius: 'var(--radius-sm)', fontSize: 14, outline: 'none', background: 'var(--color-surface)' },
+  input:       { flex: 1, padding: '10px var(--space-3)', border: '1px solid var(--color-border-strong)', borderRadius: 'var(--radius-sm)', fontSize: 14, outline: 'none', minWidth: 200 },
+  btnSearch:   { padding: '10px var(--space-5)', background: 'var(--color-primary)', color: 'white', border: 'none', borderRadius: 'var(--radius-sm)', fontSize: 14, cursor: 'pointer', fontWeight: 600, boxShadow: 'var(--shadow-sm)' },
+  btnClear:    { padding: '10px var(--space-4)', background: 'var(--color-surface-muted)', color: 'var(--color-text-secondary)', border: '1px solid var(--color-border-strong)', borderRadius: 'var(--radius-sm)', fontSize: 14, cursor: 'pointer', fontWeight: 500 },
+  hint:        { fontSize: 12, color: 'var(--color-accent)', marginTop: 'var(--space-2)' },
+  resultInfo:  { fontSize: 13, color: 'var(--color-text-secondary)', marginBottom: 'var(--space-3)', fontWeight: 500 },
+  viewToggle:  { display: 'flex', gap: 'var(--space-2)', marginBottom: 'var(--space-4)' },
+  toggleBtn:   { padding: '8px var(--space-4)', background: 'var(--color-surface-muted)', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-sm)', fontSize: 13, cursor: 'pointer', fontWeight: 500, color: 'var(--color-text-secondary)' },
+  toggleActive:{ background: 'var(--color-primary)', color: 'white', border: '1px solid var(--color-primary)', fontWeight: 600 },
+  cardsGrid:   { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 'var(--space-4)' },
+  card:        { background: 'var(--color-surface)', borderRadius: 'var(--radius-md)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border)', transition: 'box-shadow var(--transition)' },
   cardImg:     { width: '100%', height: 140, objectFit: 'cover' },
-  cardBody:    { padding: 14 },
-  cardTitle:   { fontSize: 14, fontWeight: 700, color: '#222', marginBottom: 4 },
-  cardSub:     { fontSize: 12, color: '#888', marginBottom: 2 },
-  cardID:      { fontSize: 10, color: '#bbb', marginTop: 6 },
-  empty:       { color: '#aaa', fontSize: 14, padding: 20, textAlign: 'center' },
-  tableWrap:   { background: 'white', borderRadius: 8, overflow: 'hidden', boxShadow: '0 2px 6px rgba(0,0,0,0.06)' },
+  cardBody:    { padding: 'var(--space-3) var(--space-4)' },
+  cardTitle:   { fontSize: 14, fontWeight: 600, color: 'var(--color-text)', marginBottom: 'var(--space-1)' },
+  cardSub:     { fontSize: 12, color: 'var(--color-text-muted)', marginBottom: 2 },
+  cardID:      { fontSize: 10, color: 'var(--color-text-placeholder)', marginTop: 'var(--space-2)', fontFamily: 'monospace' },
+  empty:       { color: 'var(--color-text-muted)', fontSize: 14, padding: 'var(--space-8)', textAlign: 'center', background: 'var(--color-surface)', borderRadius: 'var(--radius-md)', border: '1px dashed var(--color-border)' },
+  tableWrap:   { background: 'var(--color-surface)', borderRadius: 'var(--radius-md)', overflow: 'hidden', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border)' },
   table:       { width: '100%', borderCollapse: 'collapse' },
-  thead:       { background: '#2c3e50' },
-  th:          { padding: '12px 14px', color: 'white', fontSize: 13, fontWeight: 600, textAlign: 'left' },
-  td:          { padding: '11px 14px', fontSize: 13, color: '#444', borderBottom: '1px solid #f0f0f0' }
+  thead:       { background: 'var(--color-primary)' },
+  th:          { padding: 'var(--space-3) var(--space-4)', color: 'white', fontSize: 12, fontWeight: 600, textAlign: 'left', letterSpacing: '0.02em', textTransform: 'uppercase' },
+  td:          { padding: '11px var(--space-4)', fontSize: 13, color: 'var(--color-text-secondary)', borderBottom: '1px solid var(--color-border)' },
 }
