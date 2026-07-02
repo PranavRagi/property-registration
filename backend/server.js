@@ -238,6 +238,9 @@ app.put('/property/:id', verifyToken, upload.array('images', 4), async (req, res
       sellerName:    req.body.sellerName    || existing.sellerName,
       contactNo:     req.body.contactNo     || existing.contactNo,
       email:         req.body.email         || existing.email,
+      floorNumber:   req.body.floorNumber   || existing.floorNumber,
+      totalFloors:   req.body.totalFloors   || existing.totalFloors,
+      isNegotiable:  req.body.isNegotiable ==='true'  || existing.isNegotiable === true,
       updatedAt:     new Date().toISOString()
     }
 
